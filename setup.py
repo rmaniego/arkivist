@@ -16,7 +16,7 @@ setuptools.setup(
     url = 'https://github.com/rmaniego/arkivist',
     download_url = 'https://github.com/rmaniego/arkivist/archive/v1.0.tar.gz',
     keywords = ['Dictionary', 'JSON', 'File', 'Storage'],
-    install_requires=[],
+    install_requires=["json"],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers', 

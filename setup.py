@@ -6,7 +6,7 @@ with open("README.md", "r") as f:
 setuptools.setup(
     name = 'arkivist',
     packages = ["arkivist"],
-    version = '1.0.0',
+    version = '1.0.1',
     license='MIT',
     description = 'Access and manipulate dictionaries and JSON files.',
     long_description=long_description,
@@ -16,7 +16,7 @@ setuptools.setup(
     url = 'https://github.com/rmaniego/arkivist',
     download_url = 'https://github.com/rmaniego/arkivist/archive/v1.0.tar.gz',
     keywords = ['Dictionary', 'JSON', 'File', 'Storage'],
-    install_requires=["json"],
+    install_requires=[],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers', 

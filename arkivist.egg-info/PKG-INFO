@@ -1,0 +1,58 @@
+Metadata-Version: 2.1
+Name: arkivist
+Version: 1.0.0
+Summary: Access and manipulate dictionaries and JSON files.
+Home-page: https://github.com/rmaniego/arkivist
+Author: Rodney Maniego Jr.
+Author-email: rod.maniego23@gmail.com
+License: MIT
+Download-URL: https://github.com/rmaniego/arkivist/archive/v1.0.tar.gz
+Description: # arkivist
+        Access and manipulate dictionaries and JSON files.
+        
+        ## Import
+        ```python
+        from aktivist.aktivist import update, read
+        ```
+        
+        ## Usage
+        **1. Reading from JSON file**
+        ```python
+        people = read("people.json")
+        ```
+        
+        **2. Updating JSON file**
+        ```python
+        people = read("people.json")
+        
+        # item 1
+        person = {}
+        person.update({"name": "Abc Xyz"})
+        person.update({"age": 12})
+        people.update({"abcxyz": person})
+        
+        # item 2
+        person = {}
+        person.update({"name": "Lmn Opq"})
+        person.update({"age": 15})
+        people.update({"lmnopq": person})
+        
+        # basic usage
+        update("people.json", people)
+        
+        # adjust indent
+        update("people.json", people, indent=3)
+        
+        # sort and reverse order
+        update("people.json", people, sort=True, reverse=True)
+        ```
+        
+Keywords: Dictionary,JSON,File,Storage
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Intended Audience :: Developers
+Classifier: Topic :: Software Development :: Build Tools
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown

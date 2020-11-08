@@ -1,0 +1,11 @@
+README.md
+setup.cfg
+setup.py
+arkivist/__init__.py
+arkivist/arkivist.py
+arkivist/version.py
+arkivist.egg-info/PKG-INFO
+arkivist.egg-info/SOURCES.txt
+arkivist.egg-info/dependency_links.txt
+arkivist.egg-info/requires.txt
+arkivist.egg-info/top_level.txt

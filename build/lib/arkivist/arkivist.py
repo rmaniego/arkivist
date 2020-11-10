@@ -4,10 +4,94 @@
 """
 import json
 
+class Arkivist:
+    def __init__(self, filepath, indent=4, sort=False, reverse=False, autosave=True):
+        """
+            Read and prepare the JSON/Dictionary object.
+            ...
+            Parameters
+            ---
+            filepath: string
+                path to save the json file
+            indent: integer
+                number of spaces in an indent (1, 2, 3, 4)
+            sort: boolean
+                sorts the dictionary based on keys
+            reverse: boolean
+                sorts the dictionary in reverse
+            autosave: boolean
+                save dictionary to JSON file after every update
+        """
+        self.filepath = filepath
+        self.collection = read(filepath)
+        self.indent = indent
+        self.sort = sort
+        self.reverse = reverse
+        self.autosave = autosave
+    
+    def show(self, sort=False, reverse=False):
+        """
+            Return the dictionary object.
+            ...
+            Parameters
+            ---
+            sort: boolean
+                sorts the dictionary based on keys
+            reverse: boolean
+                sorts the dictionary in reverse
+        """
+        self.sort = sort
+        self.reverse = reverse
+        if sort:
+            self.collection = dict(sorted(self.collection.items(), reverse=reverse))
+        return self.collection
+    
+    def search(self, key, fallback=None):
+        """
+            Gets the value of the search key from the  dictionary.
+            ...
+            Parameters
+            ---
+            key: string
+                key found in the dictionary
+            fallback: any
+                any datatype to return when the key doesn't exist
+                
+        """
+        return self.collection.get(key, fallback)
+    
+    def set(self, data):
+        """
+            Formats and saves the dictionary into a JSON file.
+            ...
+            Parameters
+            ---
+            data: dictionary
+                dictionary object
+        """
+        self.collection.update(data)
+        if self.autosave:
+            update(self.filepath, self.collection, self.indent, self.sort, self.reverse)
+        return self
+
+    def save(self, filepath=""):
+        """
+            Save and formats the dictionary into a JSON file.
+            Doesn't change the original filepath
+            ...
+            Parameters
+            ---
+            filepath: string
+                any filepath, if empty defaults to previously set filepath
+        """
+        savepath = self.filepath
+        if filepath != "": savepath = filepath
+        update(savepath, self.collection, self.indent, self.sort, self.reverse)
+        return self
 
 def update(filepath, data, indent=4, sort=False, reverse=False):
     """
-        Save and formats dictionary into a JSON file.
+        Formats and saves the dictionary into a JSON file.
         ...
         Parameters
         ---

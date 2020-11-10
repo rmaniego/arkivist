@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: arkivist
-Version: 1.0.2
+Version: 1.0.3
 Summary: Access and manipulate dictionaries and JSON files.
 Home-page: https://github.com/rmaniego/arkivist
 Author: Rodney Maniego Jr.
@@ -12,7 +12,7 @@ Description: # arkivist
         
         ## Import
         ```python
-        from aktivist.aktivist import update, read
+        from arkivist.arkivist import update, read
         ```
         
         ## Usage

@@ -3,7 +3,7 @@ Access and manipulate dictionaries and JSON files.
 
 ## Import
 ```python
-from aktivist.aktivist import update, read
+from arkivist.arkivist import update, read
 ```
 
 ## Usage

@@ -32,5 +32,6 @@ person = {}
 person.update({"name": "Maria"})
 people.set({"maria": person})
 people.save() # manual saving
+people.save(filepath="test.backup.json") # save to another file
 print("Search for Maria:\t\t", people.search("maria", fallback=""))
 

@@ -74,9 +74,19 @@ class Arkivist:
             update(self.filepath, self.collection, self.indent, self.sort, self.reverse)
         return self
 
-    def save(self):
-        """ Save and formats the dictionary into a JSON file. """
-        update(self.filepath, self.collection, self.indent, self.sort, self.reverse)
+    def save(self, filepath=""):
+        """
+            Save and formats the dictionary into a JSON file.
+            Doesn't change the original filepath
+            ...
+            Parameters
+            ---
+            filepath: string
+                any filepath, if empty defaults to previously set filepath
+        """
+        savepath = self.filepath
+        if filepath != "": savepath = filepath
+        update(savepath, self.collection, self.indent, self.sort, self.reverse)
         return self
 
 def update(filepath, data, indent=4, sort=False, reverse=False):

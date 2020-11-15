@@ -98,7 +98,25 @@ print("Keys:\t\t", people.keys())
 print("Values:\t\t", people.values())
 ```
 
-**6. Replace and clear dictionary**
+**6. Invert the dictionary**
+```python
+from arkivist import Arkivist
+
+simple = Arkivist("test.simple.json")
+
+simple.clear()
+simple.set({0: "a"})
+simple.set({1: "b"})
+simple.set({2: "c"})
+
+print("Normal:\t", simple.show())
+# inverts the dictionary
+# keys and values must be hashable
+simple.invert()
+print("Invert:\t", simple.show())
+```
+
+**7. Replace and clear dictionary**
 ```python
 from arkivist import Arkivist
 

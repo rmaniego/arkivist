@@ -74,16 +74,24 @@ class Arkivist:
             update(self.filepath, self.collection, self.indent, self.sort, self.reverse)
         return self
     
+    def invert(self):
+        """ Inverts the dictionary """
+        try:
+            # hashable keys / values
+            self.collection = dict(zip(self.collection.values(), self.collection.keys()))
+            if self.autosave:
+                update(self.filepath, self.collection, self.indent, self.sort, self.reverse)
+        except:
+            pass
+        return self
+    
     def keys(self):
         """ Get all the keys of the ditionary """
         return list(self.collection.keys())
     
     def values(self):
         """ Get all the values of the ditionary """
-        vals = []
-        for key, value in self.collection.items():
-            vals.append(value)
-        return vals
+        return list(self.collection.values())
     
     def count(self):
         """ Count the number of entries in the dictionary """

@@ -87,7 +87,18 @@ people = Arkivist("test.json", autosave=False)
 print("Count:\t\t", people.count())
 ```
 
-**5. Replace and clear dictionary**
+**5. Get the keys and the values**
+```python
+from arkivist import Arkivist
+
+people = Arkivist("test.json", autosave=False)
+
+# get the keys and values
+print("Keys:\t\t", people.keys())
+print("Values:\t\t", people.values())
+```
+
+**6. Replace and clear dictionary**
 ```python
 from arkivist import Arkivist
 

@@ -44,6 +44,13 @@ print("Count:\t\t", people.count())
 ## Example #5
 people = Arkivist("test.json")
 
+# get the keys and values
+print("Keys:\t\t", people.keys())
+print("Values:\t\t", people.values())
+
+## Example #6
+people = Arkivist("test.json")
+
 # print original contents
 print("Old:\t\t", people.show())
 

@@ -74,6 +74,17 @@ class Arkivist:
             update(self.filepath, self.collection, self.indent, self.sort, self.reverse)
         return self
     
+    def keys(self):
+        """ Get all the keys of the ditionary """
+        return list(self.collection.keys())
+    
+    def values(self):
+        """ Get all the values of the ditionary """
+        vals = []
+        for key, value in self.collection.items():
+            vals.append(value)
+        return vals
+    
     def count(self):
         """ Count the number of entries in the dictionary """
         return len(self.collection)

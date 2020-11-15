@@ -38,6 +38,12 @@ print("Search for Maria:\t\t", people.search("maria", fallback=""))
 ## Example #4
 people = Arkivist("test.json")
 
+# print the number of entries
+print("Count:\t\t", people.count())
+
+## Example #5
+people = Arkivist("test.json")
+
 # print original contents
 print("Old:\t\t", people.show())
 

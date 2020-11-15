@@ -74,6 +74,10 @@ class Arkivist:
             update(self.filepath, self.collection, self.indent, self.sort, self.reverse)
         return self
     
+    def count(self):
+        """ Count the number of entries in the dictionary """
+        return len(self.collection)
+    
     def clear(self):
         """ Clears the dictionary """
         self.collection = {}

@@ -83,6 +83,16 @@ from arkivist import Arkivist
 
 people = Arkivist("test.json", autosave=False)
 
+# print the number of entries
+print("Count:\t\t", people.count())
+```
+
+**5. Replace and clear dictionary**
+```python
+from arkivist import Arkivist
+
+people = Arkivist("test.json", autosave=False)
+
 # print original contents
 print("Old:\t\t", people.show())
 

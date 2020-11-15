@@ -35,3 +35,19 @@ people.save() # manual saving
 people.save(filepath="test.backup.json") # save to another file
 print("Search for Maria:\t\t", people.search("maria", fallback=""))
 
+## Example #4
+people = Arkivist("test.json")
+
+# print original contents
+print("Old:\t\t", people.show())
+
+# print new contents
+alien = {"anon": {"name": "Anon"}}
+people.replace(alien)
+print("New:\t\t", people.show())
+
+# print empty dictionary
+people.clear()
+print("Clear:\t\t", people.show())
+
+

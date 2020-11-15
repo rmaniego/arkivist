@@ -76,3 +76,22 @@ people.save(filepath="test.backup.json")
 maria = people.search("maria", fallback="")
 print("Search for Maria:\t\t", maria)
 ```
+
+**4. Replace and clear dictionary**
+```python
+from arkivist import Arkivist
+
+people = Arkivist("test.json", autosave=False)
+
+# print original contents
+print("Old:\t\t", people.show())
+
+# print new contents
+alien = {"anon": {"name": "Anon"}}
+people.replace(alien)
+print("New:\t\t", people.show())
+
+# print empty dictionary
+people.clear()
+print("Clear:\t\t", people.show())
+```

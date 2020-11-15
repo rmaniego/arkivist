@@ -77,6 +77,8 @@ class Arkivist:
     def clear(self):
         """ Clears the dictionary """
         self.collection = {}
+        if self.autosave:
+            update(self.filepath, self.collection, self.indent, self.sort, self.reverse)
         return self
     
     def replace(self, collection):

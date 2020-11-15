@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: arkivist
-Version: 1.0.6
+Version: 1.0.7
 Summary: Access and manipulate dictionaries and JSON files.
 Home-page: https://github.com/rmaniego/arkivist
 Author: Rodney Maniego Jr.
@@ -92,6 +92,16 @@ Description: # arkivist
         
         people = Arkivist("test.json", autosave=False)
         
+        # print the number of entries
+        print("Count:\t\t", people.count())
+        ```
+        
+        **5. Replace and clear dictionary**
+        ```python
+        from arkivist import Arkivist
+        
+        people = Arkivist("test.json", autosave=False)
+        
         # print original contents
         print("Old:\t\t", people.show())
         
@@ -104,7 +114,6 @@ Description: # arkivist
         people.clear()
         print("Clear:\t\t", people.show())
         ```
-        
 Keywords: Dictionary,JSON,File,Storage
 Platform: UNKNOWN
 Classifier: Development Status :: 5 - Production/Stable

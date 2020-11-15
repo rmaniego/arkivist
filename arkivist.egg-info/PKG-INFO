@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: arkivist
-Version: 1.0.8
+Version: 1.0.9
 Summary: Access and manipulate dictionaries and JSON files.
 Home-page: https://github.com/rmaniego/arkivist
 Author: Rodney Maniego Jr.
@@ -107,7 +107,25 @@ Description: # arkivist
         print("Values:\t\t", people.values())
         ```
         
-        **6. Replace and clear dictionary**
+        **6. Invert the dictionary**
+        ```python
+        from arkivist import Arkivist
+        
+        simple = Arkivist("test.simple.json")
+        
+        simple.clear()
+        simple.set({0: "a"})
+        simple.set({1: "b"})
+        simple.set({2: "c"})
+        
+        print("Normal:\t", simple.show())
+        # inverts the dictionary
+        # keys and values must be hashable
+        simple.invert()
+        print("Invert:\t", simple.show())
+        ```
+        
+        **7. Replace and clear dictionary**
         ```python
         from arkivist import Arkivist
         

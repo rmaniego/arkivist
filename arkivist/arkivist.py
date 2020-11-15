@@ -73,6 +73,26 @@ class Arkivist:
         if self.autosave:
             update(self.filepath, self.collection, self.indent, self.sort, self.reverse)
         return self
+    
+    def clear(self):
+        """ Clears the dictionary """
+        self.collection = {}
+        return self
+    
+    def replace(self, collection):
+        """
+            Replaces the existing dictionary with another specified dictionary
+            ...
+            Parameters
+            ---
+            collection: dict
+                a dictionary to replace the contents of the original dictionary
+        """
+        if type(collection) == dict:
+            self.collection = collection
+            if self.autosave:
+                update(self.filepath, self.collection, self.indent, self.sort, self.reverse)
+        return self
 
     def save(self, filepath=""):
         """

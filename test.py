@@ -83,4 +83,28 @@ print("New: ", people.show())
 people.clear()
 print("Clear: ", people.show())
 
+## Example #8
+print("\nTest #8")
+people = Arkivist("test.json")
+
+# valid dictionary
+people.load({"ufo": {"name": "UFO"}})
+print("Valid Input: ", people.show())
+
+# valid string
+people.load('{"dog": {"name": "Doggy"}}')
+print("Valid Input: ", people.show())
+
+# flush invalid input
+people.load(1234)
+print("Invalid Input: ", people.show())
+
+## Example #9
+print("\nTest #9")
+people = Arkivist("test.json")
+
+# flattens nested dictionary
+people.set({"dog": {"name": "Doggy"}})
+people.set({"ufo": {"name": "UFO"}})
+print("Flatten: ", people.flatten().show())
 

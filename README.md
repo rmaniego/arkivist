@@ -134,3 +134,39 @@ print("New:\t\t", people.show())
 people.clear()
 print("Clear:\t\t", people.show())
 ```
+
+**7. Load new dictionary or JSON String**
+```python
+## Example #8
+print("\nTest #8")
+from arkivist import Arkivist
+
+people = Arkivist("test.json")
+
+# valid dictionary
+people.load({"ufo": {"name": "UFO"}})
+print("Valid Input: ", people.show())
+
+# valid string
+people.load('{"dog": {"name": "Doggy"}}')
+print("Valid Input: ", people.show())
+
+# flush invalid input
+people.load(1234)
+print("Invalid Input: ", people.show())
+```
+
+**7. Flatten any nested dictionary**
+```python
+## Example #9
+print("\nTest #9")
+from arkivist import Arkivist
+
+
+people = Arkivist("test.json")
+
+# flattens nested dictionary
+people.set({"dog": {"name": "Doggy"}})
+people.set({"ufo": {"name": "UFO"}})
+print("Flatten: ", people.flatten().show())
+```

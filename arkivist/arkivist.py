@@ -29,6 +29,31 @@ class Arkivist:
         self.reverse = reverse
         self.autosave = autosave
     
+    def load(self, data):
+        """
+            Replaces the existing dictionary with another specified dictionary,
+            same as replace except that it also parses string.
+            ...
+            Parameters
+            ---
+            data: str / dict
+                any valid string or dict object
+        """
+        if type(data) == dict:
+            self.replace(data)
+        elif type(data) == str:
+            try:
+                temp = json.loads(data)
+                self.replace(temp)
+            except:
+                pass
+        return self
+    
+    def flatten(self):
+        """  Flattens a nested dictionary. """
+        self.collection = flattener(self.collection)
+        return self
+    
     def show(self, sort=False, reverse=False):
         """
             Return the dictionary object.
@@ -133,6 +158,36 @@ class Arkivist:
         if filepath != "": savepath = filepath
         update(savepath, self.collection, self.indent, self.sort, self.reverse)
         return self
+
+def flattener(data):
+    """
+        Flatten dictionary
+        ...
+        Parameters
+        ---
+        data: dictionary
+            any valid dictionary
+    """
+    out = {}
+    ## https://www.geeksforgeeks.org/flattening-json-objects-in-python/
+    def flatten(x, name =''):
+        # If the Nested key-value
+        # pair is of dict type
+        if type(x) is dict:
+            for a in x:
+                flatten(x[a], name + a + '.')
+        # If the Nested key-value
+        # pair is of list type
+        elif type(x) is list:
+            i = 0
+            for a in x:
+                flatten(a, name + str(i) + '.')
+                i += 1
+        else:
+            out[name[:-1]] = x
+
+    flatten(data)
+    return out
 
 def update(filepath, data, indent=4, sort=False, reverse=False):
     """

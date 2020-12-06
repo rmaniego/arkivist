@@ -3,6 +3,7 @@
     Arkivist
 """
 import json
+import requests
 
 class Arkivist:
     def __init__(self, filepath="", indent=4, sort=False, reverse=False, autosave=True):
@@ -51,7 +52,7 @@ class Arkivist:
         """ Duplicate for update function. """
         return self.update(data)
 
-    def fetch(url):
+    def fetch(self, url):
         """
             Get JSON data from a web API through HTTP/HTTPS GET method.
             ...
@@ -61,8 +62,8 @@ class Arkivist:
                 any valid URL string
         """
         try:
-            with request.urlopen(url) as source:
-                self.collection = json.loads(source.read().decode())
+            with requests.get(url) as source:
+                self.collection = source.json()
         except:
             pass
         return self

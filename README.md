@@ -170,3 +170,17 @@ people.set({"dog": {"name": "Doggy"}})
 people.set({"ufo": {"name": "UFO"}})
 print("Flatten: ", people.flatten().show())
 ```
+
+**7. Featch from web API**
+```python
+## Example #10
+print("\nTest #10")
+## do not save to file
+todo = Arkivist()
+
+# fetch from web api - invalid
+todo.fetch("https://www.google.com")
+# fetch from web api - valid
+todo.fetch("https://jsonplaceholder.typicode.com/todos/1")
+print("Show: ", todo.show())
+```

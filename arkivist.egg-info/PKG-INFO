@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: arkivist
-Version: 1.0.9
+Version: 1.0.10
 Summary: Access and manipulate dictionaries and JSON files.
 Home-page: https://github.com/rmaniego/arkivist
 Author: Rodney Maniego Jr.
@@ -142,6 +142,42 @@ Description: # arkivist
         # print empty dictionary
         people.clear()
         print("Clear:\t\t", people.show())
+        ```
+        
+        **7. Load new dictionary or JSON String**
+        ```python
+        ## Example #8
+        print("\nTest #8")
+        from arkivist import Arkivist
+        
+        people = Arkivist("test.json")
+        
+        # valid dictionary
+        people.load({"ufo": {"name": "UFO"}})
+        print("Valid Input: ", people.show())
+        
+        # valid string
+        people.load('{"dog": {"name": "Doggy"}}')
+        print("Valid Input: ", people.show())
+        
+        # flush invalid input
+        people.load(1234)
+        print("Invalid Input: ", people.show())
+        ```
+        
+        **7. Flatten any nested dictionary**
+        ```python
+        ## Example #9
+        print("\nTest #9")
+        from arkivist import Arkivist
+        
+        
+        people = Arkivist("test.json")
+        
+        # flattens nested dictionary
+        people.set({"dog": {"name": "Doggy"}})
+        people.set({"ufo": {"name": "UFO"}})
+        print("Flatten: ", people.flatten().show())
         ```
 Keywords: Dictionary,JSON,File,Storage
 Platform: UNKNOWN

@@ -5,7 +5,7 @@
 import json
 
 class Arkivist:
-    def __init__(self, filepath, indent=4, sort=False, reverse=False, autosave=True):
+    def __init__(self, filepath="", indent=4, sort=False, reverse=False, autosave=True):
         """
             Read and prepare the JSON/Dictionary object.
             ...
@@ -21,13 +21,87 @@ class Arkivist:
                 sorts the dictionary in reverse
             autosave: boolean
                 save dictionary to JSON file after every update
+            save_to_file: boolean
+                save dictionary to JSON file, else just keep in memory
         """
+        self.save_to_file = True
         self.filepath = filepath
+        if filepath == "": self.save_to_file = False
         self.collection = read(filepath)
         self.indent = indent
         self.sort = sort
         self.reverse = reverse
         self.autosave = autosave
+    
+    def update(self, data):
+        """
+            Formats and saves the dictionary into a JSON file.
+            ...
+            Parameters
+            ---
+            data: dictionary
+                dictionary object
+        """
+        self.collection.update(data)
+        if self.autosave and self.save_to_file:
+            update_file(self.filepath, self.collection, self.indent, self.sort, self.reverse)
+        return self
+    
+    def set(self, data):
+        """ Duplicate for update function. """
+        return self.update(data)
+
+    def fetch(url):
+        """
+            Get JSON data from a web API through HTTP/HTTPS GET method.
+            ...
+            Parameters
+            ---
+            url: str
+                any valid URL string
+        """
+        try:
+            with request.urlopen(url) as source:
+                self.collection = json.loads(source.read().decode())
+        except:
+            pass
+        return self
+    
+    def load(self, data):
+        """
+            Replaces the existing dictionary with another specified dictionary,
+            same as replace except that it also parses string.
+            ...
+            Parameters
+            ---
+            data: str / dict
+                any valid string or dict object
+        """
+        if type(data) == dict:
+            self.replace(data)
+        elif type(data) == str:
+            try:
+                temp = json.loads(data)
+                self.replace(temp)
+            except:
+                pass
+        return self
+    
+    def invert(self):
+        """ Inverts the dictionary """
+        try:
+            # hashable keys / values
+            self.collection = dict(zip(self.collection.values(), self.collection.keys()))
+            if self.autosave and self.save_to_file:
+                update_file(self.filepath, self.collection, self.indent, self.sort, self.reverse)
+        except:
+            pass
+        return self
+    
+    def flatten(self):
+        """  Flattens a nested dictionary. """
+        self.collection = flattener(self.collection)
+        return self
     
     def show(self, sort=False, reverse=False):
         """
@@ -60,31 +134,6 @@ class Arkivist:
         """
         return self.collection.get(key, fallback)
     
-    def set(self, data):
-        """
-            Formats and saves the dictionary into a JSON file.
-            ...
-            Parameters
-            ---
-            data: dictionary
-                dictionary object
-        """
-        self.collection.update(data)
-        if self.autosave:
-            update(self.filepath, self.collection, self.indent, self.sort, self.reverse)
-        return self
-    
-    def invert(self):
-        """ Inverts the dictionary """
-        try:
-            # hashable keys / values
-            self.collection = dict(zip(self.collection.values(), self.collection.keys()))
-            if self.autosave:
-                update(self.filepath, self.collection, self.indent, self.sort, self.reverse)
-        except:
-            pass
-        return self
-    
     def keys(self):
         """ Get all the keys of the ditionary """
         return list(self.collection.keys())
@@ -100,8 +149,8 @@ class Arkivist:
     def clear(self):
         """ Clears the dictionary """
         self.collection = {}
-        if self.autosave:
-            update(self.filepath, self.collection, self.indent, self.sort, self.reverse)
+        if self.autosave and self.save_to_file:
+            update_file(self.filepath, self.collection, self.indent, self.sort, self.reverse)
         return self
     
     def replace(self, collection):
@@ -115,26 +164,59 @@ class Arkivist:
         """
         if type(collection) == dict:
             self.collection = collection
-            if self.autosave:
-                update(self.filepath, self.collection, self.indent, self.sort, self.reverse)
+            if self.autosave and self.save_to_file:
+                update_file(self.filepath, self.collection, self.indent, self.sort, self.reverse)
         return self
 
     def save(self, filepath=""):
         """
             Save and formats the dictionary into a JSON file.
-            Doesn't change the original filepath
+            Doesn't change the original filepath.
+            If no filepath and savepath is set, write to fallback filepath.
             ...
             Parameters
             ---
             filepath: string
                 any filepath, if empty defaults to previously set filepath
         """
+        self.save_to_file = True
         savepath = self.filepath
         if filepath != "": savepath = filepath
-        update(savepath, self.collection, self.indent, self.sort, self.reverse)
+        if savepath == "": savepath = "arkivist.data.json"
+        update_file(savepath, self.collection, self.indent, self.sort, self.reverse)
         return self
 
-def update(filepath, data, indent=4, sort=False, reverse=False):
+def flattener(data):
+    """
+        Flatten dictionary
+        ...
+        Parameters
+        ---
+        data: dictionary
+            any valid dictionary
+    """
+    out = {}
+    ## https://www.geeksforgeeks.org/flattening-json-objects-in-python/
+    def flatten(x, name =''):
+        # If the Nested key-value
+        # pair is of dict type
+        if type(x) is dict:
+            for a in x:
+                flatten(x[a], name + a + '.')
+        # If the Nested key-value
+        # pair is of list type
+        elif type(x) is list:
+            i = 0
+            for a in x:
+                flatten(a, name + str(i) + '.')
+                i += 1
+        else:
+            out[name[:-1]] = x
+
+    flatten(data)
+    return out
+
+def update_file(filepath, data, indent=4, sort=False, reverse=False):
     """
         Formats and saves the dictionary into a JSON file.
         ...

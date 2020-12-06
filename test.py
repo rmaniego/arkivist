@@ -108,3 +108,12 @@ people.set({"dog": {"name": "Doggy"}})
 people.set({"ufo": {"name": "UFO"}})
 print("Flatten: ", people.flatten().show())
 
+## Example #9
+print("\nTest #10")
+## do not save to file
+todos = Arkivist()
+
+# fetch from web api
+todos.fetch("https://jsonplaceholder.typicode.com/todos")
+print("Show: ", todos.show())
+

@@ -118,3 +118,14 @@ todo.fetch("https://www.google.com")
 # fetch from web api - valid
 todo.fetch("https://jsonplaceholder.typicode.com/todos/1")
 print("Show: ", todo.show())
+
+
+## Example #11
+print("\nTest #11")
+## do not save to file
+people = Arkivist("test.json").clear()
+print("Count:", people.count(), "; Is empty: ", people.is_empty())
+
+# flattens nested dictionary
+people.update({"dog": {"name": "Doggy"}})
+print("Count:", people.count(), "; Is not empty: ", people.is_not_empty())

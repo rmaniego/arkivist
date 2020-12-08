@@ -171,7 +171,7 @@ people.set({"ufo": {"name": "UFO"}})
 print("Flatten: ", people.flatten().show())
 ```
 
-**7. Featch from web API**
+**7. Fetch from web API**
 ```python
 ## Example #10
 print("\nTest #10")
@@ -183,4 +183,16 @@ todo.fetch("https://www.google.com")
 # fetch from web api - valid
 todo.fetch("https://jsonplaceholder.typicode.com/todos/1")
 print("Show: ", todo.show())
+```
+
+**7. Check if empty or not**
+```python
+print("\nTest #11")
+## do not save to file
+people = Arkivist("test.json").clear()
+print("Count:", people.count(), "; Is empty: ", people.is_empty())
+
+# flattens nested dictionary
+people.update({"dog": {"name": "Doggy"}})
+print("Count:", people.count(), "; Is not empty: ", people.is_not_empty())
 ```

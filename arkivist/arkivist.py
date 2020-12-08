@@ -121,6 +121,24 @@ class Arkivist:
             self.collection = dict(sorted(self.collection.items(), reverse=reverse))
         return self.collection
     
+    def items(self, sort=False, reverse=False):
+        """
+            Generator for dictionary
+            ...
+            Parameters
+            ---
+            sort: boolean
+                sorts the dictionary based on keys
+            reverse: boolean
+                sorts the dictionary in reverse
+        """
+        self.sort = sort
+        self.reverse = reverse
+        if sort:
+            self.collection = dict(sorted(self.collection.items(), reverse=reverse))
+        for key, value in self.collection.items():
+            yield key, value
+    
     def search(self, key, fallback=None):
         """
             Gets the value of the search key from the  dictionary.

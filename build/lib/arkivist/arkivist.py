@@ -143,6 +143,18 @@ class Arkivist:
         """ Get all the values of the ditionary """
         return list(self.collection.values())
     
+    def is_empty(self):
+        """ Check if dictionary is empty """
+        if len(self.collection) == 0:
+            return True
+        return False
+    
+    def is_not_empty(self):
+        """ Check if dictionary is not empty """
+        if len(self.collection) == 0:
+            return False
+        return True
+    
     def count(self):
         """ Count the number of entries in the dictionary """
         return len(self.collection)

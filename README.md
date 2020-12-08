@@ -196,3 +196,25 @@ print("Count:", people.count(), "; Is empty: ", people.is_empty())
 people.update({"dog": {"name": "Doggy"}})
 print("Count:", people.count(), "; Is not empty: ", people.is_not_empty())
 ```
+
+**7. Yield items**
+```python
+print("\nTest #12")
+people = Arkivist("test.json").clear()
+
+people.update({"abc": {"name": "Abc"}})
+people.update({"dog": {"name": "Doggy"}})
+people.update({"juan": {"name": "Juan"}})
+people.update({"ufo": {"name": "UFO"}})
+people.update({"xyz": {"name": "xyz"}})
+
+# Get key value pairs
+print("\nAll items:")
+for key, value in people.items():
+    print(key, value)
+
+# Get key value pairs in reverse order
+print("\nReverse:")
+for key, value in people.items(sort=True, reverse=True):
+    print(key, value)
+```

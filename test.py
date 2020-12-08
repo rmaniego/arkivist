@@ -22,7 +22,7 @@ people = Arkivist("test.json")
 
 person = {}
 person.update({"name": "Juan"})
-people.set({"juan": person})
+people.update({"juan": person})
 print("Show all items (unsorted): ", people.show())
 print("Show all items (sorted): ", people.show(sort=True))
 print("Show all items (reverse): ", people.show(sort=True, reverse=True))
@@ -33,7 +33,7 @@ people = Arkivist("test.json", autosave=False)
 
 person = {}
 person.update({"name": "Maria"})
-people.set({"maria": person})
+people.update({"maria": person})
 people.save() # manual saving
 people.save(filepath="test.backup.json") # save to another file
 print("Search for Maria: ", people.search("maria", fallback=""))
@@ -58,9 +58,9 @@ print("\nTest #6")
 simple = Arkivist("test.simple.json")
 
 simple.clear()
-simple.set({0: "a"})
-simple.set({1: "b"})
-simple.set({2: "c"})
+simple.update({0: "a"})
+simple.update({1: "b"})
+simple.update({2: "c"})
 
 # inverts the dictionary
 print("Normal: ", simple.show())
@@ -104,8 +104,8 @@ print("\nTest #9")
 people = Arkivist("test.json")
 
 # flattens nested dictionary
-people.set({"dog": {"name": "Doggy"}})
-people.set({"ufo": {"name": "UFO"}})
+people.update({"dog": {"name": "Doggy"}})
+people.update({"ufo": {"name": "UFO"}})
 print("Flatten: ", people.flatten().show())
 
 ## Example #10
@@ -122,10 +122,31 @@ print("Show: ", todo.show())
 
 ## Example #11
 print("\nTest #11")
-## do not save to file
+# Check if empty
 people = Arkivist("test.json").clear()
 print("Count:", people.count(), "; Is empty: ", people.is_empty())
 
-# flattens nested dictionary
+# Check if not empty
 people.update({"dog": {"name": "Doggy"}})
 print("Count:", people.count(), "; Is not empty: ", people.is_not_empty())
+
+
+## Example #12
+print("\nTest #12")
+people = Arkivist("test.json").clear()
+
+people.update({"abc": {"name": "Abc"}})
+people.update({"dog": {"name": "Doggy"}})
+people.update({"juan": {"name": "Juan"}})
+people.update({"ufo": {"name": "UFO"}})
+people.update({"xyz": {"name": "xyz"}})
+
+# Get key value pairs
+print("\nAll items:")
+for key, value in people.items():
+    print(key, value)
+
+# Get key value pairs in reverse order
+print("\nReverse:")
+for key, value in people.items(sort=True, reverse=True):
+    print(key, value)

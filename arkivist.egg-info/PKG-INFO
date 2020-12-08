@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: arkivist
-Version: 1.0.12
+Version: 1.0.13
 Summary: Access and manipulate dictionaries and JSON files.
 Home-page: https://github.com/rmaniego/arkivist
 Author: Rodney Maniego Jr.
@@ -180,7 +180,7 @@ Description: # arkivist
         print("Flatten: ", people.flatten().show())
         ```
         
-        **7. Featch from web API**
+        **7. Fetch from web API**
         ```python
         ## Example #10
         print("\nTest #10")
@@ -192,6 +192,18 @@ Description: # arkivist
         # fetch from web api - valid
         todo.fetch("https://jsonplaceholder.typicode.com/todos/1")
         print("Show: ", todo.show())
+        ```
+        
+        **7. Check if empty or not**
+        ```python
+        print("\nTest #11")
+        ## do not save to file
+        people = Arkivist("test.json").clear()
+        print("Count:", people.count(), "; Is empty: ", people.is_empty())
+        
+        # flattens nested dictionary
+        people.update({"dog": {"name": "Doggy"}})
+        print("Count:", people.count(), "; Is not empty: ", people.is_not_empty())
         ```
 Keywords: Dictionary,JSON,File,Storage
 Platform: UNKNOWN

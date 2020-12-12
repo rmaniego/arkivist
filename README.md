@@ -47,7 +47,7 @@ people = Arkivist("test.json")
 
 person = {}
 person.update({"name": "Juan"})
-people.set({"juan": person})
+people.update({"juan": person})
 
 print("Show all items (unsorted):\t", people.show())
 print("Show all items (sorted):\t", people.show(sort=True))
@@ -64,7 +64,7 @@ people = Arkivist("test.json", autosave=False)
 
 person = {}
 person.update({"name": "Maria"})
-people.set({"maria": person})
+people.update({"maria": person})
 
 # manual saving
 people.save()
@@ -105,9 +105,9 @@ from arkivist import Arkivist
 simple = Arkivist("test.simple.json")
 
 simple.clear()
-simple.set({0: "a"})
-simple.set({1: "b"})
-simple.set({2: "c"})
+simple.update({0: "a"})
+simple.update({1: "b"})
+simple.update({2: "c"})
 
 print("Normal:\t", simple.show())
 # inverts the dictionary
@@ -135,7 +135,7 @@ people.clear()
 print("Clear:\t\t", people.show())
 ```
 
-**7. Load new dictionary or JSON String**
+**8. Load new dictionary or JSON String**
 ```python
 ## Example #8
 print("\nTest #8")
@@ -156,7 +156,7 @@ people.load(1234)
 print("Invalid Input: ", people.show())
 ```
 
-**7. Flatten any nested dictionary**
+**9. Flatten any nested dictionary**
 ```python
 ## Example #9
 print("\nTest #9")
@@ -166,12 +166,12 @@ from arkivist import Arkivist
 people = Arkivist("test.json")
 
 # flattens nested dictionary
-people.set({"dog": {"name": "Doggy"}})
-people.set({"ufo": {"name": "UFO"}})
+people.update({"dog": {"name": "Doggy"}})
+people.update({"ufo": {"name": "UFO"}})
 print("Flatten: ", people.flatten().show())
 ```
 
-**7. Fetch from web API**
+**10. Fetch from web API**
 ```python
 ## Example #10
 print("\nTest #10")
@@ -185,7 +185,7 @@ todo.fetch("https://jsonplaceholder.typicode.com/todos/1")
 print("Show: ", todo.show())
 ```
 
-**7. Check if empty or not**
+**11. Check if empty or not**
 ```python
 print("\nTest #11")
 ## do not save to file
@@ -197,7 +197,7 @@ people.update({"dog": {"name": "Doggy"}})
 print("Count:", people.count(), "; Is not empty: ", people.is_not_empty())
 ```
 
-**7. Yield items**
+**12. Yield items**
 ```python
 print("\nTest #12")
 people = Arkivist("test.json").clear()
@@ -217,4 +217,43 @@ for key, value in people.items():
 print("\nReverse:")
 for key, value in people.items(sort=True, reverse=True):
     print(key, value)
+```
+
+**13. Querying**
+```python
+print("\nTest #13")
+people = Arkivist("tests.json").clear()
+
+people.update({"abc": {"name": "Abc"}})
+people.update({"dog": {"name": "Doggy"}})
+people.update({"juan": {"name": "Juan"}})
+people.update({"ufo": {"name": "UFO"}})
+people.update({"xyz": {"name": "xyz"}})
+
+matches = people.where("name", "Doggy").show()
+print("\nShow matches equals to 'Doggy':\n", matches)
+
+print("\nLoop over matches with 'D/doggy':")
+for key, value in people.where("name", "doggy", case_sensitive=False).items():
+    print(" ", key, value)
+
+matches = people.where("name").contains("a").show()
+print("\nShow matches with 'a':\n", matches)
+
+matches = people.where("name").contains("a", case_sensitive=False).show()
+print("\nShow matches with 'A/a':\n", matches)
+
+print("\nLoop over matches with 'A/a'")
+for key, value in people.where("name").contains("a", case_sensitive=False).items():
+    print(" ", key, value)
+
+matches = people.where("name").exclude("a").show()
+print("\nShow excluding with 'a':\n", matches)
+
+matches = people.where("name").exclude("a", case_sensitive=False).show()
+print("\nShow excluding with 'A/a':\n", matches)
+
+print("\nLoop over matches excluding 'A/a':")
+for key, value in people.where("name").exclude("a", case_sensitive=False).items():
+    print(" ", key, value)
 ```

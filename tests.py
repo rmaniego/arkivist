@@ -4,7 +4,7 @@ from arkivist.arkivist import update_file, read
 
 ## Example #1
 print("\nTest #1")
-people = read("test.json")
+people = read("tests.json")
 
 person = {}
 person.update({"name": "Abc"})
@@ -14,11 +14,11 @@ person = {}
 person.update({"name": "Xyz"})
 people.update({"xyz": person})
 
-update_file("test.json", people, indent=2, sort=True, reverse=True)
+update_file("tests.json", people, indent=2, sort=True, reverse=True)
 
 ## Example #2 / autosave = True (default)
 print("\nTest #2")
-people = Arkivist("test.json")
+people = Arkivist("tests.json")
 
 person = {}
 person.update({"name": "Juan"})
@@ -29,7 +29,7 @@ print("Show all items (reverse): ", people.show(sort=True, reverse=True))
 
 ## Example #3 / autosave = False
 print("\nTest #3")
-people = Arkivist("test.json", autosave=False)
+people = Arkivist("tests.json", autosave=False)
 
 person = {}
 person.update({"name": "Maria"})
@@ -40,14 +40,14 @@ print("Search for Maria: ", people.search("maria", fallback=""))
 
 ## Example #4
 print("\nTest #4")
-people = Arkivist("test.json")
+people = Arkivist("tests.json")
 
 # print the number of entries
 print("Count: ", people.count())
 
 ## Example #5
 print("\nTest #5")
-people = Arkivist("test.json")
+people = Arkivist("tests.json")
 
 # get the keys and values
 print("Keys: ", people.keys())
@@ -69,7 +69,7 @@ print("Invert: ", simple.show())
 
 ## Example #7
 print("\nTest #7")
-people = Arkivist("test.json")
+people = Arkivist("tests.json")
 
 # print original contents
 print("Old: ", people.show())
@@ -85,7 +85,7 @@ print("Clear: ", people.show())
 
 ## Example #8
 print("\nTest #8")
-people = Arkivist("test.json")
+people = Arkivist("tests.json")
 
 # valid dictionary
 people.load({"ufo": {"name": "UFO"}})
@@ -101,7 +101,7 @@ print("Invalid Input: ", people.show())
 
 ## Example #9
 print("\nTest #9")
-people = Arkivist("test.json")
+people = Arkivist("tests.json")
 
 # flattens nested dictionary
 people.update({"dog": {"name": "Doggy"}})
@@ -123,7 +123,7 @@ print("Show: ", todo.show())
 ## Example #11
 print("\nTest #11")
 # Check if empty
-people = Arkivist("test.json").clear()
+people = Arkivist("tests.json").clear()
 print("Count:", people.count(), "; Is empty: ", people.is_empty())
 
 # Check if not empty
@@ -133,7 +133,7 @@ print("Count:", people.count(), "; Is not empty: ", people.is_not_empty())
 
 ## Example #12
 print("\nTest #12")
-people = Arkivist("test.json").clear()
+people = Arkivist("tests.json").clear()
 
 people.update({"abc": {"name": "Abc"}})
 people.update({"dog": {"name": "Doggy"}})
@@ -150,3 +150,41 @@ for key, value in people.items():
 print("\nReverse:")
 for key, value in people.items(sort=True, reverse=True):
     print(key, value)
+
+
+## Example #13
+print("\nTest #13")
+people = Arkivist("tests.json").clear()
+
+people.update({"abc": {"name": "Abc"}})
+people.update({"dog": {"name": "Doggy"}})
+people.update({"juan": {"name": "Juan"}})
+people.update({"ufo": {"name": "UFO"}})
+people.update({"xyz": {"name": "xyz"}})
+
+matches = people.where("name", "Doggy").show()
+print("\nShow matches equals to 'Doggy':\n", matches)
+
+print("\nLoop over matches with 'D/doggy':")
+for key, value in people.where("name", "doggy", case_sensitive=False).items():
+    print(" ", key, value)
+
+matches = people.where("name").contains("a").show()
+print("\nShow matches with 'a':\n", matches)
+
+matches = people.where("name").contains("a", case_sensitive=False).show()
+print("\nShow matches with 'A/a':\n", matches)
+
+print("\nLoop over matches with 'A/a'")
+for key, value in people.where("name").contains("a", case_sensitive=False).items():
+    print(" ", key, value)
+
+matches = people.where("name").exclude("a").show()
+print("\nShow excluding with 'a':\n", matches)
+
+matches = people.where("name").exclude("a", case_sensitive=False).show()
+print("\nShow excluding with 'A/a':\n", matches)
+
+print("\nLoop over matches excluding 'A/a':")
+for key, value in people.where("name").exclude("a", case_sensitive=False).items():
+    print(" ", key, value)

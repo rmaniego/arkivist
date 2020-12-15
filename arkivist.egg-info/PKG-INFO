@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: arkivist
-Version: 1.0.16
+Version: 1.0.18
 Summary: Arkivist is a lightweight python package that simplifies the management of JSON data and files.
 Home-page: https://github.com/rmaniego/arkivist
 Author: Rodney Maniego Jr.
@@ -10,219 +10,145 @@ Download-URL: https://github.com/rmaniego/arkivist/archive/v1.0.tar.gz
 Description: # arkivist
         Arkivist is a lightweight python package that simplifies the management of JSON data and files. It leverages the power of Python dictionaries and JSON files, by creating a persistent storage with less complexity.
         
-        ## Import
-        ```python
-        from arkivist.arkivist import update, read
-        ```
+        ## TL;DR
+        **Arkivist** is a lightweight python package that simplifies the management of JSON data and files. It leverages the power of Python dictionaries and JSON files, by creating a persistent storage with less complexity.
+        
+        ## Fun fact
+        Arkivist is a play on the word Archive, which means a collection of historical documents or records. Arkivist is like your digital librarian that manages your important data for a lightweight and organized data storage.
+        
+        ## Official Release
+        **Arkivist** can now be used on your Python projects through PyPi by running pip command on a Python-ready environment.
+        
+        `pip install arkivist --upgrade`
+        
+        Current version is 1.0.16, but more updates are coming soon. Installing it will also install required packages including *requests*.
+        
+        This is compatible with Python 3.6+ and is already used in various personal projects.
+        
+        ## Use-cases
+        **1.** Need a lightweight data storage with zero application installations.
+        **2.** The project is for personal or hobby with low number of users who simultaneously access the data storage.
+        **3.** The project requires something that has a fast learning curve due to resource or time constraints.
         
         ## Usage
-        **1. Reading from JSON file**
-        ```python
-        people = read("people.json")
-        ```
-        
-        **2. Updating JSON file**
-        ```python
-        people = read("people.json")
-        
-        # item 1
-        person = {}
-        person.update({"name": "Abc Xyz"})
-        person.update({"age": 12})
-        people.update({"abcxyz": person})
-        
-        # item 2
-        person = {}
-        person.update({"name": "Lmn Opq"})
-        person.update({"age": 15})
-        people.update({"lmnopq": person})
-        
-        # basic usage
-        update("people.json", people)
-        
-        # adjust indent
-        update("people.json", people, indent=3)
-        
-        # sort and reverse order
-        update("people.json", people, sort=True, reverse=True)
-        ```
-        
-        **3a. Arkivist class, show variations**
+        **1. Import Package**
         ```python
         from arkivist import Arkivist
-        
-        
-        people = Arkivist("test.json")
-        
-        person = {}
-        person.update({"name": "Juan"})
-        people.update({"juan": person})
-        
-        print("Show all items (unsorted):\t", people.show())
-        print("Show all items (sorted):\t", people.show(sort=True))
-        print("Show all items (reverse):\t", people.show(sort=True, reverse=True))
         ```
         
-        
-        **3b. Arkivist class, manual save and search**
+        **2. Instantiate JSON file**
         ```python
-        from arkivist import Arkivist
+        # straightforward usage
+        json_data = Arkivist("myStorage.json")
+        ```
         
-        ## autosave = False
-        people = Arkivist("test.json", autosave=False)
+        **3. Add new entry**
+        ```python
+        # basic add entry
+        places= Arkivist("data/places.json")
+        places.set(1, "Sun")
+        places.set(2, "Earth")
+        places.set(3, "Moon")
+        print(places.show())
         
-        person = {}
-        person.update({"name": "Maria"})
-        people.update({"maria": person})
+        # json update format
+        people = Arkivist("data/people.json")
+        people.update({"juan": {"name": "Juan Dela Cruz"}})
+        people.update({"maria": {"name": "Maria Dela Cruz"}})
+        print(people.show())
+        ```
         
-        # manual saving
+        **4. Invert the key-value pairs**
+        This swaps the key and value of all the entries in the dictionary, key-value pairs must be hashable.
+        ```python
+        places = Arkivist("data/places.json")
+        places.invert()
+        print(places.show())
+        ```
+        
+        **5. Get all data**
+        ```python
+        places = Arkivist("data/places.json")
+        print(places.show())
+        print(places.show(sorted=True))
+        print(places.show(sorted=True, reverse=True))
+        ```
+        
+        **6. Clear all data**
+        ```python
+        places = Arkivist("data/places.json", autosave=False)
+        places.clear()
+        print(places.show())
+        ```
+        
+        **7. Manual save to file**
+        ```python
+        people = Arkivist("data/people.json", autosave=False)
+        people.update({"boy": {"name": "Boy"}})
+        people.update({"girl": {"name": "Girl"}})
         people.save()
         
         # save to another file
-        people.save(filepath="test.backup.json")
-        
-        # search in dictionary
-        maria = people.search("maria", fallback="")
-        print("Search for Maria:\t\t", maria)
-        ```
-        
-        **4. Replace and clear dictionary**
-        ```python
-        from arkivist import Arkivist
-        
-        people = Arkivist("test.json", autosave=False)
-        
-        # print the number of entries
-        print("Count:\t\t", people.count())
-        ```
-        
-        **5. Get the keys and the values**
-        ```python
-        from arkivist import Arkivist
-        
-        people = Arkivist("test.json", autosave=False)
-        
-        # get the keys and values
-        print("Keys:\t\t", people.keys())
-        print("Values:\t\t", people.values())
-        ```
-        
-        **6. Invert the dictionary**
-        ```python
-        from arkivist import Arkivist
-        
-        simple = Arkivist("test.simple.json")
-        
-        simple.clear()
-        simple.update({0: "a"})
-        simple.update({1: "b"})
-        simple.update({2: "c"})
-        
-        print("Normal:\t", simple.show())
-        # inverts the dictionary
-        # keys and values must be hashable
-        simple.invert()
-        print("Invert:\t", simple.show())
-        ```
-        
-        **7. Replace and clear dictionary**
-        ```python
-        from arkivist import Arkivist
-        
-        people = Arkivist("test.json", autosave=False)
-        
-        # print original contents
-        print("Old:\t\t", people.show())
-        
-        # print new contents
-        alien = {"anon": {"name": "Anon"}}
-        people.replace(alien)
-        print("New:\t\t", people.show())
-        
-        # print empty dictionary
-        people.clear()
-        print("Clear:\t\t", people.show())
-        ```
-        
-        **8. Load new dictionary or JSON String**
-        ```python
-        ## Example #8
-        print("\nTest #8")
-        from arkivist import Arkivist
-        
-        people = Arkivist("test.json")
-        
-        # valid dictionary
-        people.load({"ufo": {"name": "UFO"}})
-        print("Valid Input: ", people.show())
-        
-        # valid string
-        people.load('{"dog": {"name": "Doggy"}}')
-        print("Valid Input: ", people.show())
-        
-        # flush invalid input
-        people.load(1234)
-        print("Invalid Input: ", people.show())
-        ```
-        
-        **9. Flatten any nested dictionary**
-        ```python
-        ## Example #9
-        print("\nTest #9")
-        from arkivist import Arkivist
-        
-        
-        people = Arkivist("test.json")
-        
-        # flattens nested dictionary
-        people.update({"dog": {"name": "Doggy"}})
         people.update({"ufo": {"name": "UFO"}})
-        print("Flatten: ", people.flatten().show())
+        people.save(filepath="people_and_other_creatures.json")
         ```
         
-        **10. Fetch from web API**
+        **8. Replace all contents**
         ```python
-        ## Example #10
-        print("\nTest #10")
-        ## do not save to file
-        todo = Arkivist()
+        # replace from a valid dictionary and replaces previous contents
+        people = Arkivist("data/people.json")
+        friends = {"friend": {"name": "Friend"}, "enemy": {"name": "Enemy"}}
+        people.replace(friends )
+        print(people.show())
         
-        # fetch from web api - invalid
-        todo.fetch("https://www.google.com")
-        # fetch from web api - valid
-        todo.fetch("https://jsonplaceholder.typicode.com/todos/1")
-        print("Show: ", todo.show())
+        # load from valid JSON string and replaces previous contents
+        anons = "{\"robot\": {\"name\": \"Robot\"}, \"ghost\": {\"name\": \"Ghost\"}}"
+        people.load(anons)
+        print(people.show())
+        ```
+        
+        **9. Flatten the nested dictionary**
+        ```python
+        people = Arkivist("data/people.json")
+        people.update({"juan": {"name": "Juan Dela Cruz"}})
+        people.update({"maria": {"name": "Maria Dela Cruz"}})
+        people.flatten()
+        print(people.show())
+        ```
+        
+        **10. Fetch from a web API**
+        ```python
+        todos = Arkivist() # autosave = False, data is only in memory
+        todos.fetch("https://jsonplaceholder.typicode.com/todos/1")
+        print(todos.show())
         ```
         
         **11. Check if empty or not**
         ```python
-        print("\nTest #11")
         ## do not save to file
-        people = Arkivist("test.json").clear()
+        people = Arkivist("data/people.json").clear()
         print("Count:", people.count(), "; Is empty: ", people.is_empty())
         
-        # flattens nested dictionary
+        # add new content
         people.update({"dog": {"name": "Doggy"}})
         print("Count:", people.count(), "; Is not empty: ", people.is_not_empty())
         ```
         
-        **12. Yield items**
+        **12. Yield items, use in for loop**
         ```python
-        print("\nTest #12")
-        people = Arkivist("test.json").clear()
-        
+        people = Arkivist("data/people.json")
         people.update({"abc": {"name": "Abc"}})
         people.update({"dog": {"name": "Doggy"}})
         people.update({"juan": {"name": "Juan"}})
         people.update({"ufo": {"name": "UFO"}})
-        people.update({"xyz": {"name": "xyz"}})
+        people.update({"xyz": {"name": "Xyz"}})
         
-        # Get key value pairs
+        # get key value pairs
         print("\nAll items:")
         for key, value in people.items():
             print(key, value)
         
-        # Get key value pairs in reverse order
+        # get key value pairs in reverse order
         print("\nReverse:")
         for key, value in people.items(sort=True, reverse=True):
             print(key, value)
@@ -266,6 +192,12 @@ Description: # arkivist
         for key, value in people.where("name").exclude("a", case_sensitive=False).items():
             print(" ", key, value)
         ```
+        
+        ## Futures
+        Arkivist is an ongoing project and new features will be added in the future. In the future, it aims to add complex querying and also add a security layer to protect data from unauthorized access.
+        
+        ## Conclusion
+        Arkivist allows you to build your Python apps with a lightweight data storage, this can come handy especially when you are doing personal and hobby projects that handles simple data.
 Keywords: Dictionary,JSON,File,Storage
 Platform: UNKNOWN
 Classifier: Development Status :: 5 - Production/Stable

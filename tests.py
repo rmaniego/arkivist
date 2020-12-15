@@ -23,6 +23,10 @@ people = Arkivist("tests.json")
 person = {}
 person.update({"name": "Juan"})
 people.update({"juan": person})
+
+people.set("boy", {"name": "Boy"})
+people.set("girl", {"name": "Girl"})
+
 print("Show all items (unsorted): ", people.show())
 print("Show all items (sorted): ", people.show(sort=True))
 print("Show all items (reverse): ", people.show(sort=True, reverse=True))

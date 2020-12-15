@@ -40,6 +40,23 @@ class Arkivist:
         self.case_sensitive = True
         self.matches = {}
     
+    def set(self, key, value):
+        """
+            Formats and saves the dictionary into a JSON file.
+            ...
+            Parameters
+            ---
+            key: unique hashable string
+                the key of the entry
+            value: string, integer, float
+                the value of the entry
+        """
+        self.child_key = None
+        self.collection.update({key: value})
+        if self.autosave and self.save_to_file:
+            update_file(self.filepath, self.collection, self.indent, self.sort, self.reverse)
+        return self
+    
     def update(self, data):
         """
             Formats and saves the dictionary into a JSON file.
@@ -53,10 +70,6 @@ class Arkivist:
         self.collection.update(data)
         if self.autosave and self.save_to_file:
             update_file(self.filepath, self.collection, self.indent, self.sort, self.reverse)
-        return self
-    
-    def set(self, data):
-        print("Deprecated function, use update() instead.")
         return self
 
     def fetch(self, url):

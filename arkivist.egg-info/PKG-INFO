@@ -1,14 +1,14 @@
 Metadata-Version: 2.1
 Name: arkivist
-Version: 1.0.15
-Summary: Access and manipulate dictionaries and JSON files.
+Version: 1.0.16
+Summary: Arkivist is a lightweight python package that simplifies the management of JSON data and files.
 Home-page: https://github.com/rmaniego/arkivist
 Author: Rodney Maniego Jr.
 Author-email: rod.maniego23@gmail.com
 License: MIT
 Download-URL: https://github.com/rmaniego/arkivist/archive/v1.0.tar.gz
 Description: # arkivist
-        Access and manipulate dictionaries and JSON files.
+        Arkivist is a lightweight python package that simplifies the management of JSON data and files. It leverages the power of Python dictionaries and JSON files, by creating a persistent storage with less complexity.
         
         ## Import
         ```python

@@ -65,11 +65,23 @@ print(places.show(sorted=True))
 print(places.show(sorted=True, reverse=True))
 ```
 
-**6. Clear all data**
+**6. Remove item / Clear all data**
 ```python
+print("\nTest #13")
 places = Arkivist("data/places.json", autosave=False)
+
+# clear
 places.clear()
 print(places.show())
+
+# populate
+places.set(1, "Sun")
+places.set(2, "Earth")
+places.set(3, "Moon")
+
+print("All:", places.show())
+places.pop(1) # remove item
+print("No Sun:", places.show())
 ```
 
 **7. Manual save to file**

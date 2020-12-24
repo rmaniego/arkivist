@@ -192,3 +192,17 @@ print("\nShow excluding with 'A/a':\n", matches)
 print("\nLoop over matches excluding 'A/a':")
 for key, value in people.where("name").exclude("a", case_sensitive=False).items():
     print(" ", key, value)
+
+## Example #13
+print("\nTest #13")
+people = Arkivist("tests.json").clear()
+
+people.update({"abc": {"name": "Abc"}})
+people.update({"dog": {"name": "Doggy"}})
+people.update({"juan": {"name": "Juan"}})
+people.update({"ufo": {"name": "UFO"}})
+people.update({"xyz": {"name": "xyz"}})
+
+print("All:", people.show())
+people.pop("ufo")
+print("No UFO:", people.show())

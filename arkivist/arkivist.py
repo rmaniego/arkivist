@@ -110,6 +110,21 @@ class Arkivist:
                 pass
         return self
     
+    def pop(self, key):
+        """
+            Remove key-value from the dictionary
+            ...
+            Parameters
+            ---
+            key: str
+                any valid string found in the dictionary
+        """
+        self.child_key = None
+        self.collection.pop(key)
+        if self.autosave and self.save_to_file:
+            update_file(self.filepath, self.collection, self.indent, self.sort, self.reverse)
+        return self
+    
     def invert(self):
         """ Inverts the dictionary """
         self.child_key = None

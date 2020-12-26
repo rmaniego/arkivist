@@ -206,3 +206,19 @@ people.update({"xyz": {"name": "xyz"}})
 print("All:", people.show())
 people.pop("ufo")
 print("No UFO:", people.show())
+
+## Example #14
+print("\nTest #14")
+people1 = Arkivist("people.json").clear()
+people2 = Arkivist("people.json").clear()
+
+people1.update({"abc": {"name": "Abc"}})
+people1.update({"dog": {"name": "Doggy"}})
+people1.update({"juan": {"name": "Juan"}})
+people1.update({"ufo": {"name": "UFO"}})
+people1.update({"xyz": {"name": "xyz"}})
+
+print("People1:", people1.show())
+print("People2:", people2.show())
+people2.reload()
+print("People2", people2.show())

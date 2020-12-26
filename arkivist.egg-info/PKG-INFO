@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: arkivist
-Version: 1.0.19
+Version: 1.0.20
 Summary: Arkivist is a lightweight python package that simplifies the management of JSON data and files.
 Home-page: https://github.com/rmaniego/arkivist
 Author: Rodney Maniego Jr.
@@ -66,12 +66,20 @@ Description: # arkivist
         print(places.show())
         ```
         
-        **5. Get all data**
+        **5. Get all data, reload from JSON file**
         ```python
-        places = Arkivist("data/places.json")
-        print(places.show())
-        print(places.show(sorted=True))
-        print(places.show(sorted=True, reverse=True))
+        places1 = Arkivist("data/places.json")
+        places2 = Arkivist("data/places.json")
+        
+        print(places1.show())
+        print(places1.show(sorted=True))
+        print(places1.show(sorted=True, reverse=True))
+        
+        places1.set(4, "Mars")
+        print(places1.show())
+        print(places2.show())
+        places2.reload() # reload updates
+        print(places2.show())
         ```
         
         **6. Remove item / Clear all data**

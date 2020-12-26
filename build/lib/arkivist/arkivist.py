@@ -110,6 +110,11 @@ class Arkivist:
                 pass
         return self
     
+    def reload(self):
+        """ Update dictionary from JSON file """
+        self.collection = read(self.filepath)
+        return self
+    
     def pop(self, key):
         """
             Remove key-value from the dictionary

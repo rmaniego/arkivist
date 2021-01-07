@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: arkivist
-Version: 1.0.20
+Version: 1.0.21
 Summary: Arkivist is a lightweight python package that simplifies the management of JSON data and files.
 Home-page: https://github.com/rmaniego/arkivist
 Author: Rodney Maniego Jr.

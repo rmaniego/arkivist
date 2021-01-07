@@ -124,10 +124,13 @@ class Arkivist:
             key: str
                 any valid string found in the dictionary
         """
-        self.child_key = None
-        self.collection.pop(key)
-        if self.autosave and self.save_to_file:
-            update_file(self.filepath, self.collection, self.indent, self.sort, self.reverse)
+        try:
+            self.child_key = None
+            self.collection.pop(key)
+            if self.autosave and self.save_to_file:
+                update_file(self.filepath, self.collection, self.indent, self.sort, self.reverse)
+        except:
+            pass
         return self
     
     def invert(self):

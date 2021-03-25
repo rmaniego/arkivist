@@ -6,7 +6,7 @@ import json
 import requests
 
 class Arkivist:
-    def __init__(self, filepath="", indent=4, sort=False, reverse=False, autosave=True):
+    def __init__(self, filepath="", indent=4, sort=False, reverse=False, autosave=True, encoding="utf-8"):
         """
             Read and prepare the JSON/Dictionary object.
             ...
@@ -24,15 +24,18 @@ class Arkivist:
                 save dictionary to JSON file after every update
             save_to_file: boolean
                 save dictionary to JSON file, else just keep in memory
+            encoding: string
+                file encoding
         """
         self.save_to_file = True
         self.filepath = filepath
         if filepath == "": self.save_to_file = False
-        self.collection = read(filepath)
+        self.collection = read(filepath, encoding)
         self.indent = indent
         self.sort = sort
         self.reverse = reverse
         self.autosave = autosave
+        self.encoding = encoding
         ## query
         self.operator = "="
         self.child_key = None
@@ -54,7 +57,7 @@ class Arkivist:
         self.child_key = None
         self.collection.update({key: value})
         if self.autosave and self.save_to_file:
-            update_file(self.filepath, self.collection, self.indent, self.sort, self.reverse)
+            update_file(self.filepath, self.collection, self.indent, self.sort, self.reverse, self.encoding)
         return self
     
     def update(self, data):
@@ -69,7 +72,7 @@ class Arkivist:
         self.child_key = None
         self.collection.update(data)
         if self.autosave and self.save_to_file:
-            update_file(self.filepath, self.collection, self.indent, self.sort, self.reverse)
+            update_file(self.filepath, self.collection, self.indent, self.sort, self.reverse, self.encoding)
         return self
 
     def fetch(self, url):
@@ -128,7 +131,7 @@ class Arkivist:
             self.child_key = None
             self.collection.pop(key)
             if self.autosave and self.save_to_file:
-                update_file(self.filepath, self.collection, self.indent, self.sort, self.reverse)
+                update_file(self.filepath, self.collection, self.indent, self.sort, self.reverse, self.encoding)
         except:
             pass
         return self
@@ -140,7 +143,7 @@ class Arkivist:
             # hashable keys / values
             self.collection = dict(zip(self.collection.values(), self.collection.keys()))
             if self.autosave and self.save_to_file:
-                update_file(self.filepath, self.collection, self.indent, self.sort, self.reverse)
+                update_file(self.filepath, self.collection, self.indent, self.sort, self.reverse, self.encoding)
         except:
             pass
         return self
@@ -304,7 +307,7 @@ class Arkivist:
         self.child_key = None
         self.collection = {}
         if self.autosave and self.save_to_file:
-            update_file(self.filepath, self.collection, self.indent, self.sort, self.reverse)
+            update_file(self.filepath, self.collection, self.indent, self.sort, self.reverse, self.encoding)
         return self
     
     def replace(self, collection):
@@ -320,7 +323,7 @@ class Arkivist:
         if type(collection) == dict:
             self.collection = collection
             if self.autosave and self.save_to_file:
-                update_file(self.filepath, self.collection, self.indent, self.sort, self.reverse)
+                update_file(self.filepath, self.collection, self.indent, self.sort, self.reverse, self.encoding)
         return self
 
     def save(self, filepath=""):
@@ -339,7 +342,7 @@ class Arkivist:
         savepath = self.filepath
         if filepath != "": savepath = filepath
         if savepath == "": savepath = "arkivist.data.json"
-        update_file(savepath, self.collection, self.indent, self.sort, self.reverse)
+        update_file(savepath, self.collection, self.indent, self.sort, self.reverse, self.encoding)
         return self
 
 def flattener(data):
@@ -404,7 +407,7 @@ def query(collection, child_key, child_val, operator, case_sensitive):
                         matches.update({key: data})
     return matches
 
-def update_file(filepath, data, indent=4, sort=False, reverse=False):
+def update_file(filepath, data, indent=4, sort=False, reverse=False, encoding="utf-8"):
     """
         Formats and saves the dictionary into a JSON file.
         ...
@@ -426,12 +429,13 @@ def update_file(filepath, data, indent=4, sort=False, reverse=False):
             data = dict(sorted(data.items(), reverse=reverse))
         try:
             indent = get_int(indent, min=1, max=4)
-            with open(filepath, "w+") as file:
-                file.write(json.dumps(data, indent=indent))
-        except:
+            with open(filepath, "w+", encoding=encoding) as file:
+                file.write(json.dumps(data, indent=indent, ensure_ascii=False, encoding=encoding))
+        except Exception as e:
+            print(e)
             pass
 
-def read(filepath):
+def read(filepath, encoding):
     """
         Read JSON file and converts to a Python dictionary.
         ...
@@ -441,7 +445,7 @@ def read(filepath):
             path to the json file
     """
     try:
-        with open(filepath, "r") as file:
+        with open(filepath, "r", encoding) as file:
             return json.loads(file.read())
     except:
         return {}

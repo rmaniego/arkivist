@@ -4,11 +4,15 @@ from arkivist.arkivist import update_file, read
 
 ## Example #1
 print("\nTest #1")
-people = read("tests.json")
+people = read("tests.json", encoding="utf-8")
 
 person = {}
 person.update({"name": "Abc"})
 people.update({"abc": person})
+
+person = {}
+person.update({"name": "Ñino"})
+people.update({"ñino": person})
 
 person = {}
 person.update({"name": "Xyz"})
@@ -16,6 +20,7 @@ people.update({"xyz": person})
 
 update_file("tests.json", people, indent=2, sort=True, reverse=True)
 
+"""
 ## Example #2 / autosave = True (default)
 print("\nTest #2")
 people = Arkivist("tests.json")
@@ -222,3 +227,5 @@ print("People1:", people1.show())
 print("People2:", people2.show())
 people2.reload()
 print("People2", people2.show())
+
+"""

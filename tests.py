@@ -3,8 +3,6 @@ from arkivist.arkivist import update_file, read
 
 
 ## Example #1
-
-"""
 print("\nTest #1")
 
 print(version.version)
@@ -24,7 +22,7 @@ people.update({"xyz": person})
 
 update_file("tests.json", people, indent=2, sort=True, reverse=True)
 
-"""
+
 ## Example #2 / autosave = True (default)
 print("\nTest #2")
 people = Arkivist("tests.json") #, encoder="utf-8")
@@ -40,7 +38,7 @@ print("Show all items (unsorted): ", people.show())
 print("Show all items (sorted): ", people.show(sort=True))
 print("Show all items (reverse): ", people.show(sort=True, reverse=True))
 
-"""
+
 
 ## Example #3 / autosave = False
 print("\nTest #3")
@@ -234,4 +232,4 @@ print("People2:", people2.show())
 people2.reload()
 print("People2", people2.show())
 
-"""
+

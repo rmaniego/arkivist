@@ -6,7 +6,7 @@ import json
 import requests
 
 class Arkivist:
-    def __init__(self, filepath="", indent=4, sort=False, reverse=False, autosave=True, encoding="utf-8"):
+    def __init__(self, filepath="", indent=4, sort=False, reverse=False, autosave=True):
         """
             Read and prepare the JSON/Dictionary object.
             ...
@@ -30,12 +30,12 @@ class Arkivist:
         self.save_to_file = True
         self.filepath = filepath
         if filepath == "": self.save_to_file = False
-        self.collection = read(filepath, encoding)
+        self.collection = read(filepath, "utf-8")
         self.indent = indent
         self.sort = sort
         self.reverse = reverse
         self.autosave = autosave
-        self.encoding = encoding
+        self.encoding = "utf-8"
         ## query
         self.operator = "="
         self.child_key = None
@@ -430,7 +430,7 @@ def update_file(filepath, data, indent=4, sort=False, reverse=False, encoding="u
         try:
             indent = get_int(indent, min=1, max=4)
             with open(filepath, "w+", encoding=encoding) as file:
-                file.write(json.dumps(data, indent=indent, ensure_ascii=False, encoding=encoding))
+                file.write(json.dumps(data, indent=indent, ensure_ascii=False))
         except Exception as e:
             print(e)
             pass
@@ -445,7 +445,7 @@ def read(filepath, encoding):
             path to the json file
     """
     try:
-        with open(filepath, "r", encoding) as file:
+        with open(filepath, "r", encoding=encoding) as file:
             return json.loads(file.read())
     except:
         return {}

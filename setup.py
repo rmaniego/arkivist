@@ -6,7 +6,7 @@ with open("README.md", "r") as f:
 setuptools.setup(
     name = 'arkivist',
     packages = ["arkivist"],
-    version = '1.0.24',
+    version = '1.0.25',
     license='MIT',
     description = 'Arkivist is a lightweight python package that simplifies the management of JSON data and files.',
     long_description=long_description,

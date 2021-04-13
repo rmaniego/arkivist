@@ -6,7 +6,7 @@ import json
 import requests
 
 class Arkivist:
-    def __init__(self, filepath="", indent=4, sort=False, reverse=False, autosave=True):
+    def __init__(self, filepath="", indent=4, sort=False, reverse=False, autosave=True, encoding="utf-8"):
         """
             Read and prepare the JSON/Dictionary object.
             ...
@@ -30,12 +30,12 @@ class Arkivist:
         self.save_to_file = True
         self.filepath = filepath
         if filepath == "": self.save_to_file = False
-        self.collection = read(filepath, "utf-8")
+        self.collection = read(filepath, encoding)
         self.indent = indent
         self.sort = sort
         self.reverse = reverse
         self.autosave = autosave
-        self.encoding = "utf-8"
+        self.encoding = encoding
         ## query
         self.operator = "="
         self.child_key = None

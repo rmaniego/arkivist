@@ -204,6 +204,15 @@ for key, value in people.where("name").exclude("a", case_sensitive=False).items(
     print(" ", key, value)
 ```
 
+**14. Setting Defaults**
+```python
+print("\nTest #14")
+hello = Arkivist("hello.json")
+hello.default("hello", "", "world")
+hello.default("hello", "", "friend")
+print("Test", hello.show())
+```
+
 ## Futures
 Arkivist is an ongoing project and new features will be added in the future. In the future, it aims to add complex querying and also add a security layer to protect data from unauthorized access.
 

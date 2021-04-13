@@ -232,4 +232,11 @@ print("People2:", people2.show())
 people2.reload()
 print("People2", people2.show())
 
+## Example #15
+print("\nTest #15")
+hello = Arkivist("hello.json")
+hello.default("hello", "", "world")
+hello.default("hello", "", "friend")
+print("Test", hello.show())
+
 

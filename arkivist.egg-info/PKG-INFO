@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: arkivist
-Version: 1.0.24
+Version: 1.0.25
 Summary: Arkivist is a lightweight python package that simplifies the management of JSON data and files.
 Home-page: https://github.com/rmaniego/arkivist
 Author: Rodney Maniego Jr.
@@ -211,6 +211,15 @@ Description: # arkivist
         print("\nLoop over matches excluding 'A/a':")
         for key, value in people.where("name").exclude("a", case_sensitive=False).items():
             print(" ", key, value)
+        ```
+        
+        **14. Setting Defaults**
+        ```python
+        print("\nTest #14")
+        hello = Arkivist("hello.json")
+        hello.default("hello", "", "world")
+        hello.default("hello", "", "friend")
+        print("Test", hello.show())
         ```
         
         ## Futures

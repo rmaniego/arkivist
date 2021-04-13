@@ -74,6 +74,26 @@ class Arkivist:
         if self.autosave and self.save_to_file:
             update_file(self.filepath, self.collection, self.indent, self.sort, self.reverse, self.encoding)
         return self
+    
+    def default(self, key, old, new):
+        """
+            If key equals to old value, update to new value
+            ...
+            Parameters
+            ---
+            key: string, int
+                any unique value
+            old: any data type
+                old value to check
+            new: any data type
+                new value to replace    
+        """
+        self.child_key = None
+        if self.collection.get(key, old) == old:
+            self.collection.update({key: new})
+        if self.autosave and self.save_to_file:
+            update_file(self.filepath, self.collection, self.indent, self.sort, self.reverse, self.encoding)
+        return self
 
     def fetch(self, url):
         """
@@ -435,7 +455,7 @@ def update_file(filepath, data, indent=4, sort=False, reverse=False, encoding="u
             print(e)
             pass
 
-def read(filepath, encoding):
+def read(filepath, encoding="utf-8"):
     """
         Read JSON file and converts to a Python dictionary.
         ...

@@ -1,26 +1,4 @@
-from arkivist import Arkivist, version
-from arkivist.arkivist import update_file, read
-
-
-## Example #1
-print("\nTest #1")
-
-print(version.version)
-people = read("tests.json")
-
-person = {}
-person.update({"name": "Abc"})
-people.update({"abc": person})
-
-person = {}
-person.update({"name": "Ñino"})
-people.update({"ñino": person})
-
-person = {}
-person.update({"name": "Xyz"})
-people.update({"xyz": person})
-
-update_file("tests.json", people, indent=2, sort=True, reverse=True)
+from arkivist import Arkivist
 
 
 ## Example #2 / autosave = True (default)
@@ -237,6 +215,11 @@ print("\nTest #15")
 hello = Arkivist("hello.json")
 hello.default("hello", "", "world")
 hello.default("hello", "", "friend")
-print("Test", hello.show())
+print("Reset defaults:", hello.show())
+
+## Example #16
+print("\nTest #16")
+print("Dictionary:", hello.show())
+print("String:", hello.string())
 
 

@@ -109,7 +109,7 @@ people.save(filepath="people_and_other_creatures.json")
 # replace from a valid dictionary and replaces previous contents
 people = Arkivist("data/people.json")
 friends = {"friend": {"name": "Friend"}, "enemy": {"name": "Enemy"}}
-people.replace(friends )
+people.replace(friends)
 print(people.show())
 
 # load from valid JSON string and replaces previous contents

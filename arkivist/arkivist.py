@@ -193,6 +193,19 @@ class Arkivist:
             self.matches = dict(sorted(self.matches.items(), reverse=reverse))
         return self.matches
     
+    def string(self, sort=False, reverse=False):
+        """
+            Return the dictionary object as string.
+            ...
+            Parameters
+            ---
+            sort: boolean
+                sorts the dictionary based on keys
+            reverse: boolean
+                sorts the dictionary in reverse
+        """
+        return json.dumps(self.show(sort, reverse), indent=self.indent, ensure_ascii=False)
+    
     def items(self, sort=False, reverse=False):
         """
             Generator for dictionary

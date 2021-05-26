@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: arkivist
-Version: 1.0.27
+Version: 1.0.28
 Summary: Arkivist is a lightweight manager for JSON files.
 Home-page: https://github.com/rmaniego/arkivist
 Author: Rodney Maniego Jr.
@@ -229,10 +229,11 @@ Description: # arkivist
         
         **16. Get random key-value pair**
         ```python
-        hello = Arkivist("hello.json")
-        hello.default("hello", "", "world")
-        hello.default("hello", "", "friend")
-        print("Test", hello.random())
+        people = Arkivist("people.json").clear()
+        people.update({"abc": {"name": "Abc"}})
+        people.update({"dog": {"name": "Doggy"}})
+        people.update({"juan": {"name": "Juan"}})
+        print("Random item:", people.random())
         ```
         
         ## Futures

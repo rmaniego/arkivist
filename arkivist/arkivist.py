@@ -220,8 +220,7 @@ class Arkivist:
             index = randint(0, len(self.collection))
             key = list(self.collection.keys())[index]
             return dict({key: self.collection.get(key, fallback)})
-        except Exception as e:
-            print(e)
+        except:
             return fallback
     
     def items(self, sort=False, reverse=False):

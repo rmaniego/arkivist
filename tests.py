@@ -222,4 +222,8 @@ print("\nTest #16")
 print("Dictionary:", hello.show())
 print("String:", hello.string())
 
+## Example #17
+print("\nTest #17")
+print("Random item:", hello.random())
+
 

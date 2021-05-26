@@ -75,7 +75,6 @@ print(places2.show())
 
 **6. Remove item / Clear all data**
 ```python
-print("\nTest #13")
 places = Arkivist("data/places.json", autosave=False)
 
 # clear
@@ -167,7 +166,6 @@ for key, value in people.items(sort=True, reverse=True):
 
 **13. Querying**
 ```python
-print("\nTest #13")
 people = Arkivist("tests.json").clear()
 
 people.update({"abc": {"name": "Abc"}})
@@ -206,11 +204,26 @@ for key, value in people.where("name").exclude("a", case_sensitive=False).items(
 
 **14. Setting Defaults**
 ```python
-print("\nTest #14")
 hello = Arkivist("hello.json")
 hello.default("hello", "", "world")
 hello.default("hello", "", "friend")
 print("Test", hello.show())
+```
+
+**15. Get raw string**
+```python
+hello = Arkivist("hello.json")
+hello.default("hello", "", "world")
+hello.default("hello", "", "friend")
+print("Test", hello.string())
+```
+
+**16. Get random key-value pair**
+```python
+hello = Arkivist("hello.json")
+hello.default("hello", "", "world")
+hello.default("hello", "", "friend")
+print("Test", hello.random())
 ```
 
 ## Futures

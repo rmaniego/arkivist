@@ -220,10 +220,11 @@ print("Test", hello.string())
 
 **16. Get random key-value pair**
 ```python
-hello = Arkivist("hello.json")
-hello.default("hello", "", "world")
-hello.default("hello", "", "friend")
-print("Test", hello.random())
+people = Arkivist("people.json").clear()
+people.update({"abc": {"name": "Abc"}})
+people.update({"dog": {"name": "Doggy"}})
+people.update({"juan": {"name": "Juan"}})
+print("Random item:", people.random())
 ```
 
 ## Futures

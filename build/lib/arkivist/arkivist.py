@@ -4,6 +4,7 @@
 """
 import json
 import requests
+from random import randint
 
 class Arkivist:
     def __init__(self, filepath="", indent=4, sort=False, reverse=False, autosave=True, encoding="utf-8"):
@@ -205,6 +206,22 @@ class Arkivist:
                 sorts the dictionary in reverse
         """
         return json.dumps(self.show(sort, reverse), indent=self.indent, ensure_ascii=False)
+    
+    def random(self, fallback=None):
+        """
+            Returns a random key-value pair.
+            ...
+            Parameters
+            ---
+            fallback: any
+                any value to return if an error is encountered
+        """
+        try:
+            index = randint(0, len(self.collection))
+            key = list(self.collection.keys())[index]
+            return dict({key: self.collection.get(key, fallback))
+        except:
+            return fallback
     
     def items(self, sort=False, reverse=False):
         """

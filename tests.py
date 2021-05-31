@@ -230,4 +230,11 @@ people.update({"dog": {"name": "Doggy"}})
 people.update({"juan": {"name": "Juan"}})
 print("Random item:", people.random())
 
+## Example #18
+print("\nTest #18")
+test = Arkivist("test.json").clear()
+test.set("number", 100)
+print("Doublecheck (100):", test.doublecheck("number", 100))
+print("Doublecheck (101):", test.doublecheck("number", 101))
+
 

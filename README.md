@@ -94,12 +94,12 @@ print("No Sun:", places.show())
 **7. Manual save to file**
 ```python
 people = Arkivist("data/people.json", autosave=False)
-people.update({"boy": {"name": "Boy"}})
-people.update({"girl": {"name": "Girl"}})
+people.set("boy", {"name": "Boy"})
+people.set("girl", {"name": "Girl"})
 people.save()
 
 # save to another file
-people.update({"ufo": {"name": "UFO"}})
+people.set("ufo", {"name": "UFO"})
 people.save(filepath="people_and_other_creatures.json")
 ```
 
@@ -120,8 +120,8 @@ print(people.show())
 **9. Flatten the nested dictionary**
 ```python
 people = Arkivist("data/people.json")
-people.update({"juan": {"name": "Juan Dela Cruz"}})
-people.update({"maria": {"name": "Maria Dela Cruz"}})
+people.set("juan", {"name": "Juan Dela Cruz"})
+people.set("maria", {"name": "Maria Dela Cruz"})
 people.flatten()
 print(people.show())
 ```
@@ -147,11 +147,11 @@ print("Count:", people.count(), "; Is not empty: ", people.is_not_empty())
 **12. Yield items, use in for loop**
 ```python
 people = Arkivist("data/people.json")
-people.update({"abc": {"name": "Abc"}})
-people.update({"dog": {"name": "Doggy"}})
-people.update({"juan": {"name": "Juan"}})
-people.update({"ufo": {"name": "UFO"}})
-people.update({"xyz": {"name": "Xyz"}})
+people.set("abc", {"name": "Abc"})
+people.set("dog", {"name": "Doggy"})
+people.set("juan", {"name": "Juan"})
+people.set("ufo", {"name": "UFO"})
+people.set("xyz", {"name": "xyz"})
 
 # get key value pairs
 print("\nAll items:")
@@ -168,11 +168,11 @@ for key, value in people.items(sort=True, reverse=True):
 ```python
 people = Arkivist("tests.json").clear()
 
-people.update({"abc": {"name": "Abc"}})
-people.update({"dog": {"name": "Doggy"}})
-people.update({"juan": {"name": "Juan"}})
-people.update({"ufo": {"name": "UFO"}})
-people.update({"xyz": {"name": "xyz"}})
+people.set("abc", {"name": "Abc"})
+people.set("dog", {"name": "Doggy"})
+people.set("juan", {"name": "Juan"})
+people.set("ufo", {"name": "UFO"})
+people.set("xyz", {"name": "xyz"})
 
 matches = people.where("name", "Doggy").show()
 print("\nShow matches equals to 'Doggy':\n", matches)
@@ -221,10 +221,18 @@ print("Test", hello.string())
 **16. Get random key-value pair**
 ```python
 people = Arkivist("people.json").clear()
-people.update({"abc": {"name": "Abc"}})
-people.update({"dog": {"name": "Doggy"}})
-people.update({"juan": {"name": "Juan"}})
+people.set("abc", {"name": "Abc"})
+people.set("dog", {"name": "Doggy"})
+people.set("juan", {"name": "Juan"})
 print("Random item:", people.random())
+```
+
+**17. Double check if expected key value is correct**
+```python
+numbers = Arkivist("numbers.json").clear()
+numbers.set("one": 1)
+print("Doublecheck (1):", numbers.doucblecheck("one", 1))
+print("Doublecheck (2):", numbers.doucblecheck("one", 2))
 ```
 
 ## Futures

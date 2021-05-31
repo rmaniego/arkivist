@@ -352,6 +352,21 @@ class Arkivist:
         self.child_key = None
         return len(self.collection)
     
+    def doublecheck(self, key, value):
+        """
+            Check whether the value of the key is equal to the expected value.
+            ...
+            Parameters
+            ---
+            key: string
+                key found in the dictionary
+            value: any
+                any datatype to check
+        """
+        if self.collection.get(key, "") == value:
+            return True
+        return False
+    
     def clear(self):
         """ Clears the dictionary """
         self.child_key = None

@@ -1,3 +1,5 @@
+![](/resources/banner.png)
+
 # arkivist
 Arkivist is a lightweight python package that simplifies the management of JSON data and files. It leverages the power of Python dictionaries and JSON files, by creating a persistent storage with less complexity.
 

@@ -245,6 +245,10 @@ test.extend_list("number", [6, 7, 8, 9, 0])
 print("Extend list [6, 7, 8, 9, 0]:", test.show())
 test.extend_list("number", [1, 10], unique=True)
 print("Extend unique list [1, 10]:", test.show())
+test.extend_list("number", [12, 15], sort=True)
+print("Extend multidimensional list [12, 15]:", test.show())
+test.extend_list("number", [[1, 2], 15], sort=True)
+print("Extend multidimensional list [[1, 2], 15]:", test.show())
 
 
 

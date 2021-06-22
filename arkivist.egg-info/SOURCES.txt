@@ -20,3 +20,4 @@ arkivist/__pycache__/arkivist.cpython-38.pyc
 arkivist/__pycache__/arkivist.cpython-39.pyc
 arkivist/__pycache__/version.cpython-38.pyc
 arkivist/__pycache__/version.cpython-39.pyc
+resources/banner.png

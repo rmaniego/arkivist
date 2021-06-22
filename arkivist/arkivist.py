@@ -76,6 +76,32 @@ class Arkivist:
             update_file(self.filepath, self.collection, self.indent, self.sort, self.reverse, self.encoding)
         return self
     
+    def extend_list(self, key, data, unique=False):
+        """
+            If the key returns a type of list, the data will be extended and will optionally remove duplicates.
+            ...
+            Parameters
+            ---
+            key: string, int
+                any unique value
+            data: list, set, tuple
+                iterable data to extend to the original list
+            unique: boolean
+                flag to optionally remove duplicates 
+        """
+        self.child_key = None
+        if isinstance(data, list) or isinstance(data, set) or isinstance(data, tuple):
+            dataset = self.collection.get(key, [])
+            if isinstance(dataset, list):
+                dataset.extend(list(data))
+                if unique:
+                    dataset = list(set(dataset))
+                self.collection.update({key: dataset})
+        if self.autosave and self.save_to_file:
+            update_file(self.filepath, self.collection, self.indent, self.sort, self.reverse, self.encoding)
+        return self
+        
+    
     def default(self, key, old, new):
         """
             If key equals to old value, update to new value

@@ -27,7 +27,6 @@ person.update({"name": "Maria"})
 people.update({"maria": person})
 people.save() # manual saving
 people.save(filepath="test.backup.json") # save to another file
-print("Search for Maria: ", people.search("maria", fallback=""))
 
 ## Example #4
 print("\nTest #4")
@@ -232,9 +231,20 @@ print("Random item:", people.random())
 
 ## Example #18
 print("\nTest #18")
-test = Arkivist("test.json").clear()
+test = Arkivist("tests.json").clear()
 test.set("number", 100)
 print("Doublecheck (100):", test.doublecheck("number", 100))
 print("Doublecheck (101):", test.doublecheck("number", 101))
+
+## Example #19
+print("\nTest #19")
+test = Arkivist("tests.json").clear()
+test.set("number", [1, 2, 3, 4, 5])
+print("Show list [1, 2, 3, 4, 5]:", test.show())
+test.extend_list("number", [6, 7, 8, 9, 0])
+print("Extend list [6, 7, 8, 9, 0]:", test.show())
+test.extend_list("number", [1, 10], unique=True)
+print("Extend unique list [1, 10]:", test.show())
+
 
 

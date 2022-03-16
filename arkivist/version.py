@@ -1,2 +1,2 @@
 """ arkivist """
-version = "1.0.33"
+version = "1.1.33"

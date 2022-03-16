@@ -1,10 +1,7 @@
 ![](/resources/banner.png)
 
 # arkivist
-Arkivist is a lightweight python package that simplifies the management of JSON data and files. It leverages the power of Python dictionaries and JSON files, by creating a persistent storage with less complexity.
-
-## TL;DR
-**Arkivist** is a lightweight python package that simplifies the management of JSON data and files. It leverages the power of Python dictionaries and JSON files, by creating a persistent storage with less complexity.
+Arkivist is Python Dictionary wrapper for JSON files.
 
 ## Fun fact
 Arkivist is a play on the word Archive, which means a collection of historical documents or records. Arkivist is like your digital librarian that manages your important data for a lightweight and organized data storage.
@@ -14,7 +11,7 @@ Arkivist is a play on the word Archive, which means a collection of historical d
 
 `pip install arkivist --upgrade`
 
-Current version is 1.0.16, but more updates are coming soon. Installing it will also install required packages including *requests*.
+Current version is 1.1.33, but more updates are coming soon. Installing it will also install required packages including *requests*.
 
 This is compatible with Python 3.6+ and is already used in various personal projects.
 
@@ -31,8 +28,11 @@ from arkivist import Arkivist
 
 **2. Instantiate JSON file**
 ```python
-# straightforward usage
-json_data = Arkivist("myStorage.json")
+# Load existing dict object
+data = Arkivist({"hello": "world"})
+
+# Read from file
+data = Arkivist("myStorage") # or "myStorage.json"
 ```
 
 **3. Add new entry**
@@ -51,15 +51,7 @@ people.update({"maria": {"name": "Maria Dela Cruz"}})
 print(people.show())
 ```
 
-**4. Invert the key-value pairs**
-This swaps the key and value of all the entries in the dictionary, key-value pairs must be hashable.
-```python
-places = Arkivist("data/places.json")
-places.invert()
-print(places.show())
-```
-
-**5. Get all data, reload from JSON file**
+**4. Get all data, reload from JSON file**
 ```python
 places1 = Arkivist("data/places.json")
 places2 = Arkivist("data/places.json")
@@ -80,7 +72,7 @@ print(places2.show())
 places = Arkivist("data/places.json", autosave=False)
 
 # clear
-places.clear()
+places.reset()
 print(places.show())
 
 # populate
@@ -124,8 +116,8 @@ print(people.show())
 people = Arkivist("data/people.json")
 people.set("juan", {"name": "Juan Dela Cruz"})
 people.set("maria", {"name": "Maria Dela Cruz"})
-people.flatten()
-print(people.show())
+flattened = people.flatten()
+print(flattened)
 ```
 
 **10. Fetch from a web API**
@@ -138,12 +130,8 @@ print(todos.show())
 **11. Check if empty or not**
 ```python
 ## do not save to file
-people = Arkivist("data/people.json").clear()
+people = Arkivist("data/people.json").reset()
 print("Count:", people.count(), "; Is empty: ", people.is_empty())
-
-# add new content
-people.update({"dog": {"name": "Doggy"}})
-print("Count:", people.count(), "; Is not empty: ", people.is_not_empty())
 ```
 
 **12. Yield items, use in for loop**
@@ -159,15 +147,12 @@ people.set("xyz", {"name": "xyz"})
 print("\nAll items:")
 for key, value in people.items():
     print(key, value)
-
-# get key value pairs in reverse order
-print("\nReverse:")
-for key, value in people.items(sort=True, reverse=True):
-    print(key, value)
 ```
 
 **13. Querying**
+*NOTE:* Temporarily not available in the latest version.
 ```python
+
 people = Arkivist("tests.json").clear()
 
 people.set("abc", {"name": "Abc"})
@@ -202,22 +187,6 @@ print("\nShow excluding with 'A/a':\n", matches)
 print("\nLoop over matches excluding 'A/a':")
 for key, value in people.where("name").exclude("a", case_sensitive=False).items():
     print(" ", key, value)
-```
-
-**14. Setting Defaults**
-```python
-hello = Arkivist("hello.json")
-hello.default("hello", "", "world")
-hello.default("hello", "", "friend")
-print("Test", hello.show())
-```
-
-**15. Get raw string**
-```python
-hello = Arkivist("hello.json")
-hello.default("hello", "", "world")
-hello.default("hello", "", "friend")
-print("Test", hello.string())
 ```
 
 **16. Get random key-value pair**

@@ -47,7 +47,7 @@ print("Values: ", people.values())
 print("\nTest #6")
 simple = Arkivist("test.simple.json")
 
-simple.clear()
+simple.reset()
 simple.update({0: "a"})
 simple.update({1: "b"})
 simple.update({2: "c"})
@@ -70,7 +70,7 @@ people.replace(alien)
 print("New: ", people.show())
 
 # print empty dictionary
-people.clear()
+people.reset()
 print("Clear: ", people.show())
 
 ## Example #8
@@ -96,7 +96,7 @@ people = Arkivist("tests.json")
 # flattens nested dictionary
 people.update({"dog": {"name": "Doggy"}})
 people.update({"ufo": {"name": "UFO"}})
-print("Flatten: ", people.flatten().show())
+print("Flatten: ", people.flatten())
 
 ## Example #10
 print("\nTest #10")
@@ -113,17 +113,13 @@ print("Show: ", todo.show())
 ## Example #11
 print("\nTest #11")
 # Check if empty
-people = Arkivist("tests.json").clear()
+people = Arkivist("tests.json").reset()
 print("Count:", people.count(), "; Is empty: ", people.is_empty())
-
-# Check if not empty
-people.update({"dog": {"name": "Doggy"}})
-print("Count:", people.count(), "; Is not empty: ", people.is_not_empty())
 
 
 ## Example #12
 print("\nTest #12")
-people = Arkivist("tests.json").clear()
+people = Arkivist("tests.json").reset()
 
 people.update({"abc": {"name": "Abc"}})
 people.update({"dog": {"name": "Doggy"}})
@@ -138,13 +134,14 @@ for key, value in people.items():
 
 # Get key value pairs in reverse order
 print("\nReverse:")
-for key, value in people.items(sort=True, reverse=True):
+people
+for key, value in people.items():
     print(key, value)
 
-
+"""
 ## Example #13
 print("\nTest #13")
-people = Arkivist("tests.json").clear()
+people = Arkivist("tests.json").reset()
 
 people.update({"abc": {"name": "Abc"}})
 people.update({"dog": {"name": "Doggy"}})
@@ -178,25 +175,12 @@ print("\nShow excluding with 'A/a':\n", matches)
 print("\nLoop over matches excluding 'A/a':")
 for key, value in people.where("name").exclude("a", case_sensitive=False).items():
     print(" ", key, value)
-
-## Example #13
-print("\nTest #13")
-people = Arkivist("tests.json").clear()
-
-people.update({"abc": {"name": "Abc"}})
-people.update({"dog": {"name": "Doggy"}})
-people.update({"juan": {"name": "Juan"}})
-people.update({"ufo": {"name": "UFO"}})
-people.update({"xyz": {"name": "xyz"}})
-
-print("All:", people.show())
-people.pop("ufo")
-print("No UFO:", people.show())
+"""
 
 ## Example #14
 print("\nTest #14")
-people1 = Arkivist("people.json").clear()
-people2 = Arkivist("people.json").clear()
+people1 = Arkivist("people.json").reset()
+people2 = Arkivist("people.json").reset()
 
 people1.update({"abc": {"name": "Abc"}})
 people1.update({"dog": {"name": "Doggy"}})
@@ -209,21 +193,15 @@ print("People2:", people2.show())
 people2.reload()
 print("People2", people2.show())
 
-## Example #15
-print("\nTest #15")
-hello = Arkivist("hello.json")
-hello.default("hello", "", "world")
-hello.default("hello", "", "friend")
-print("Reset defaults:", hello.show())
-
 ## Example #16
 print("\nTest #16")
+hello = Arkivist("hello.json")
 print("Dictionary:", hello.show())
 print("String:", hello.string())
 
 ## Example #17
 print("\nTest #17")
-people = Arkivist("people.json").clear()
+people = Arkivist("people.json").reset()
 people.update({"abc": {"name": "Abc"}})
 people.update({"dog": {"name": "Doggy"}})
 people.update({"juan": {"name": "Juan"}})
@@ -231,24 +209,10 @@ print("Random item:", people.random())
 
 ## Example #18
 print("\nTest #18")
-test = Arkivist("tests.json").clear()
+test = Arkivist("tests.json").reset()
 test.set("number", 100)
 print("Doublecheck (100):", test.doublecheck("number", 100))
 print("Doublecheck (101):", test.doublecheck("number", 101))
-
-## Example #19
-print("\nTest #19")
-test = Arkivist("tests.json").clear()
-test.set("number", [1, 2, 3, 4, 5])
-print("Show list [1, 2, 3, 4, 5]:", test.show())
-test.extend_list("number", [6, 7, 8, 9, 0])
-print("Extend list [6, 7, 8, 9, 0]:", test.show())
-test.extend_list("number", [1, 10], unique=True)
-print("Extend unique list [1, 10]:", test.show())
-test.extend_list("number", [12, 15], sort=True)
-print("Extend multidimensional list [12, 15]:", test.show())
-test.extend_list("number", [[1, 2], 15], sort=True)
-print("Extend multidimensional list [[1, 2], 15]:", test.show())
 
 
 

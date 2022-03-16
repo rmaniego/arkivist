@@ -14,10 +14,7 @@ arkivist.egg-info/SOURCES.txt
 arkivist.egg-info/dependency_links.txt
 arkivist.egg-info/requires.txt
 arkivist.egg-info/top_level.txt
-arkivist/__pycache__/__init__.cpython-38.pyc
 arkivist/__pycache__/__init__.cpython-39.pyc
-arkivist/__pycache__/arkivist.cpython-38.pyc
 arkivist/__pycache__/arkivist.cpython-39.pyc
-arkivist/__pycache__/version.cpython-38.pyc
 arkivist/__pycache__/version.cpython-39.pyc
 resources/banner.png

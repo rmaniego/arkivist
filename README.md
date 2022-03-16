@@ -3,6 +3,8 @@
 # arkivist
 Arkivist is Python Dictionary wrapper for JSON files.
 
+Other behaviors are similar to native Python dictionaries, the tutorial below only covers add-on feature specific to Arkivist.
+
 ## Fun fact
 Arkivist is a play on the word Archive, which means a collection of historical documents or records. Arkivist is like your digital librarian that manages your important data for a lightweight and organized data storage.
 
@@ -11,7 +13,7 @@ Arkivist is a play on the word Archive, which means a collection of historical d
 
 `pip install arkivist --upgrade`
 
-Current version is 1.1.33, but more updates are coming soon. Installing it will also install required packages including *requests*.
+Current version is 1.1.34, but more updates are coming soon. Installing it will also install required packages including *requests*.
 
 This is compatible with Python 3.6+ and is already used in various personal projects.
 
@@ -116,8 +118,7 @@ print(people.show())
 people = Arkivist("data/people.json")
 people.set("juan", {"name": "Juan Dela Cruz"})
 people.set("maria", {"name": "Maria Dela Cruz"})
-flattened = people.flatten()
-print(flattened)
+print(people.flatten())
 ```
 
 **10. Fetch from a web API**
@@ -134,64 +135,9 @@ people = Arkivist("data/people.json").reset()
 print("Count:", people.count(), "; Is empty: ", people.is_empty())
 ```
 
-**12. Yield items, use in for loop**
-```python
-people = Arkivist("data/people.json")
-people.set("abc", {"name": "Abc"})
-people.set("dog", {"name": "Doggy"})
-people.set("juan", {"name": "Juan"})
-people.set("ufo", {"name": "UFO"})
-people.set("xyz", {"name": "xyz"})
-
-# get key value pairs
-print("\nAll items:")
-for key, value in people.items():
-    print(key, value)
-```
-
-**13. Querying**
-*NOTE:* Temporarily not available in the latest version.
-```python
-
-people = Arkivist("tests.json").clear()
-
-people.set("abc", {"name": "Abc"})
-people.set("dog", {"name": "Doggy"})
-people.set("juan", {"name": "Juan"})
-people.set("ufo", {"name": "UFO"})
-people.set("xyz", {"name": "xyz"})
-
-matches = people.where("name", "Doggy").show()
-print("\nShow matches equals to 'Doggy':\n", matches)
-
-print("\nLoop over matches with 'D/doggy':")
-for key, value in people.where("name", "doggy", case_sensitive=False).items():
-    print(" ", key, value)
-
-matches = people.where("name").contains("a").show()
-print("\nShow matches with 'a':\n", matches)
-
-matches = people.where("name").contains("a", case_sensitive=False).show()
-print("\nShow matches with 'A/a':\n", matches)
-
-print("\nLoop over matches with 'A/a'")
-for key, value in people.where("name").contains("a", case_sensitive=False).items():
-    print(" ", key, value)
-
-matches = people.where("name").exclude("a").show()
-print("\nShow excluding with 'a':\n", matches)
-
-matches = people.where("name").exclude("a", case_sensitive=False).show()
-print("\nShow excluding with 'A/a':\n", matches)
-
-print("\nLoop over matches excluding 'A/a':")
-for key, value in people.where("name").exclude("a", case_sensitive=False).items():
-    print(" ", key, value)
-```
-
 **16. Get random key-value pair**
 ```python
-people = Arkivist("people.json").clear()
+people = Arkivist("people.json").reset()
 people.set("abc", {"name": "Abc"})
 people.set("dog", {"name": "Doggy"})
 people.set("juan", {"name": "Juan"})
@@ -200,10 +146,10 @@ print("Random item:", people.random())
 
 **17. Double check if expected key value is correct**
 ```python
-numbers = Arkivist("numbers.json").clear()
+numbers = Arkivist("numbers.json").reset()
 numbers.set("one": 1)
-print("Doublecheck (1):", numbers.doucblecheck("one", 1))
-print("Doublecheck (2):", numbers.doucblecheck("one", 2))
+print("Doublecheck (1):", numbers.doublecheck("one", 1))
+print("Doublecheck (2):", numbers.doublecheck("one", 2))
 ```
 
 ## Futures

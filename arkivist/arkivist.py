@@ -6,10 +6,11 @@ import json
 import random
 import requests
 import threading
+from .version import version, url
 from random import randint
 
 class Arkivist(dict):
-    def __init__(self, data=None, filepath=None, indent=4, autosort=False, autosave=False, reverse=False, **legacy):
+    def __init__(self, data=None, filepath=None, indent=4, autosort=False, autosave=True, reverse=False, **legacy):
         if isinstance(data, dict):
             self.update(data)
         self.filepath = _validate_filepath(filepath)

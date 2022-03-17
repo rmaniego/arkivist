@@ -13,6 +13,8 @@ class Arkivist(dict):
     def __init__(self, data=None, filepath=None, indent=4, autosort=False, autosave=True, reverse=False, **legacy):
         if isinstance(data, dict):
             self.update(data)
+        elif isinstance(data, str) and (filepath is None):
+            filepath = filepath
         self.filepath = _validate_filepath(filepath)
         if self.filepath is not None:
             data = _read_json(self.filepath)

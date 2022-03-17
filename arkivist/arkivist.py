@@ -14,7 +14,7 @@ class Arkivist(dict):
         if isinstance(data, dict):
             self.update(data)
         elif isinstance(data, str) and (filepath is None):
-            filepath = filepath
+            filepath = data
         self.filepath = _validate_filepath(filepath)
         if self.filepath is not None:
             data = _read_json(self.filepath)

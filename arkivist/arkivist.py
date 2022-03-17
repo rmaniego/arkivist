@@ -16,6 +16,7 @@ class Arkivist(dict):
         elif isinstance(data, str) and (filepath is None):
             filepath = data
         self.autosave = False
+        self.lock = threading.RLock()
         self.filepath = _validate_filepath(filepath)
         if self.filepath is not None:
             temp = _read_json(self.filepath)
@@ -25,7 +26,6 @@ class Arkivist(dict):
         self.indent = indent if indent in (1, 2, 3, 4) else 4
         self.autosort = isinstance(autosort, bool) and bool(autosort)
         self.reverse = isinstance(reverse, bool) and bool(reverse)
-        self.lock = threading.RLock()
         self.extensions = ["json", "arkivist"]
     
     def set(self, key, value):

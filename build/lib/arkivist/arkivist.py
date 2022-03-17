@@ -6,7 +6,6 @@ import json
 import random
 import requests
 import threading
-from .version import version, url
 from random import randint
 
 class Arkivist(dict):
@@ -180,7 +179,7 @@ def _validate_filepath(filepath):
         if filepath.split(".")[-1] != "json":
             filepath += ".json"
         try:
-            with open(filepath, "w+") as temp:
+            with open(filepath, "a+") as temp:
                 return filepath
         except:
             pass
@@ -188,8 +187,8 @@ def _validate_filepath(filepath):
 
 def _read_json(filepath):
     try:
-        with open(filepath, "r", encoding="utf-8") as file:
-            return json.loads(file.read())
+        with open(filepath, "r", encoding="utf-8") as f:
+            return json.loads(f.read())
     except:
         return {}
 
@@ -204,5 +203,5 @@ def _write_json(filepath, data, indent=4, autosort=False, reverse=False):
     if isinstance(autosort, bool) and bool(autosort):
         reverse = isinstance(reverse, bool) and bool(reverse)
         data = dict(sorted(data.items(), reverse=reverse))
-    with open(filepath, "w+", encoding="utf-8") as file:
-        file.write(json.dumps(data, indent=indent, ensure_ascii=False))
+    with open(filepath, "w+", encoding="utf-8") as f:
+        f.write(json.dumps(data, indent=indent, ensure_ascii=False))

@@ -43,8 +43,8 @@ print("\nTest #5")
 people = Arkivist("tests.json")
 
 # get the keys and values
-print("Keys: ", people.keys())
-print("Values: ", people.values())
+print("Keys: ", list(people.keys()))
+print("Values: ", list(people.values()))
 
 ## Example #6
 print("\nTest #6")
@@ -69,7 +69,7 @@ print("Old: ", people.show())
 
 # print new contents
 alien = {"anon": {"name": "Anon"}}
-people.replace(alien)
+people.load(alien)
 print("New: ", people.show())
 
 # print empty dictionary
@@ -130,18 +130,6 @@ people.update({"juan": {"name": "Juan"}})
 people.update({"ufo": {"name": "UFO"}})
 people.update({"xyz": {"name": "xyz"}})
 
-# Get key value pairs
-print("\nAll items:")
-for key, value in people.items():
-    print(key, value)
-
-# Get key value pairs in reverse order
-print("\nReverse:")
-people
-for key, value in people.items():
-    print(key, value)
-
-"""
 ## Example #13
 print("\nTest #13")
 people = Arkivist("tests.json").reset()
@@ -153,32 +141,31 @@ people.update({"ufo": {"name": "UFO"}})
 people.update({"xyz": {"name": "xyz"}})
 
 matches = people.where("name", "Doggy").show()
-print("\nShow matches equals to 'Doggy':\n", matches)
+print("\nShow all items where name is exactly 'Doggy':\n", matches)
 
-print("\nLoop over matches with 'D/doggy':")
-for key, value in people.where("name", "doggy", case_sensitive=False).items():
+print("\nLoop over all items where name is exactly 'D/doggy':")
+for key, value in people.where("name", "doggy", sensitivity=False).query():
     print(" ", key, value)
 
-matches = people.where("name").contains("a").show()
-print("\nShow matches with 'a':\n", matches)
+matches = people.where("name", "a", exact=False).show()
+print("\nShow all items where name contains 'a':\n", matches)
 
-matches = people.where("name").contains("a", case_sensitive=False).show()
-print("\nShow matches with 'A/a':\n", matches)
+matches = people.where("name", "a", exact=False, sensitivity=False).show()
+print("\nShow all items where name contains 'A/a':\n", matches)
 
-print("\nLoop over matches with 'A/a'")
-for key, value in people.where("name").contains("a", case_sensitive=False).items():
+print("\nLoop over all items where name contains 'A/a'")
+for key, value in people.where("name", "a", exact=False, sensitivity=False).query():
     print(" ", key, value)
 
-matches = people.where("name").exclude("a").show()
-print("\nShow excluding with 'a':\n", matches)
+matches = people.where("name").exclude("a", exact=False).show()
+print("\nShow excluding names containing 'a':\n", matches)
 
-matches = people.where("name").exclude("a", case_sensitive=False).show()
-print("\nShow excluding with 'A/a':\n", matches)
+matches = people.where("name").exclude("a", exact=False, sensitivity=False).show()
+print("\nShow excluding names containing 'A/a':\n", matches)
 
-print("\nLoop over matches excluding 'A/a':")
-for key, value in people.where("name").exclude("a", case_sensitive=False).items():
+print("\nLoop over matches excluding names containing 'A/a':")
+for key, value in people.where("name").exclude("a", exact=False, sensitivity=False).query():
     print(" ", key, value)
-"""
 
 ## Example #14
 print("\nTest #14")

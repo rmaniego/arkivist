@@ -9,7 +9,7 @@ import threading
 from random import randint
 
 class Arkivist(dict):
-    def __init__(self, data=None, filepath=None, indent=4, autosort=False, autosave=True, reverse=False, **legacy):
+    def __init__(self, data=None, filepath=None, indent=4, autosave=True, autosort=False, reverse=False, **legacy):
         if isinstance(data, dict):
             self.update(data)
         elif isinstance(data, str) and (filepath is None):
@@ -26,6 +26,14 @@ class Arkivist(dict):
         self.autosort = isinstance(autosort, bool) and bool(autosort)
         self.reverse = isinstance(reverse, bool) and bool(reverse)
         self.extensions = ["json", "arkivist"]
+        # querying properties
+        self.query_complete = False
+        self.operation = None
+        self.child = None
+        self.keyword = None
+        self.exact = True
+        self.sensitivity = False
+        self.matches = None
     
     def set(self, key, value):
         with self.lock:
@@ -115,13 +123,6 @@ class Arkivist(dict):
                     self.update(json.loads(data))
                 except:
                     pass
-        return self
-    
-    def replace(self, data):
-        with self.lock:
-            self.clear()
-            if isinstance(data, dict):
-                self.update(data)
             if self.autosave:
                 _write_json(self.filepath, self, indent=self.indent, autosort=self.autosort, reverse=self.reverse)
         return self
@@ -139,25 +140,122 @@ class Arkivist(dict):
                 _write_json(self.filepath, self, indent=self.indent, autosort=self.autosort, reverse=self.reverse)
         return self
     
+    # quering methods
+    def where(self, child, keyword=None, exact=False, sensitivity=True):
+        with self.lock:
+            self.operation = "matches"
+            self.child = child
+            self.keyword = keyword
+            self.exact = exact
+            self.sensitivity = sensitivity
+            self.query_complete = False
+            if keyword is not None:
+                if self.matches is None:
+                    self.matches = dict(self)
+                self.matches = _query(self.matches, self.operation, self.child, self.keyword, self.exact, self.sensitivity)
+                self.query_complete = True
+        return self
+    
+    def exclude(self, keyword=None, exact=False, sensitivity=True):
+        with self.lock:
+            self.operation = "exclude"
+            self.keyword = keyword
+            self.exact = exact
+            self.sensitivity = sensitivity
+            if self.matches is None:
+               self.matches = dict(self)
+            self.matches = _query(self.matches, self.operation, self.child, self.keyword, self.exact, self.sensitivity)
+            self.query_complete = True
+        return self
+    
+    def query(self, sort=False, reverse=False):
+        with self.lock:
+            if self.matches is None:
+                self.matches = dict(self)
+            if self.operation is not None and not self.query_complete:
+                self.matches = _query(self.matches, self.operation, self.child, self.keyword, self.exact, self.sensitivity)
+            temp = self.matches
+            if sort:
+                temp = dict(sorted(temp.items(), reverse=reverse))
+            # clears query data after the operation
+            self.query_complete = False
+            self.operation = None
+            self.child = None
+            self.keyword = None
+            self.exact = None
+            self.sensitivity = None
+            self.matches = None
+            for key, value in temp.items():
+                yield key, value
+    
     def show(self, sort=False, reverse=False):
         with self.lock:
-            data = dict(self)
+            if self.matches is None:
+                self.matches = dict(self)
+            if self.operation is not None and not self.query_complete:
+                self.matches = _query(self.matches, self.operation, self.child, self.keyword, self.exact, self.sensitivity)
+            temp = self.matches
             if sort:
-                data = dict(sorted(data.items(), reverse=reverse))
-            return data
+                temp = dict(sorted(temp.items(), reverse=reverse))
+            # clears query data after the operation
+            self.query_complete = False
+            self.operation = None
+            self.child = None
+            self.keyword = None
+            self.exact = None
+            self.sensitivity = None
+            self.matches = None
+            return temp
     
     def string(self, sort=False, reverse=False):
         with self.lock:
-            data = dict(self)
+            if self.matches is None:
+                self.matches = dict(self)
+            if self.operation is not None and not self.query_complete:
+                self.matches = _query(self.matches, self.operation, self.child, self.keyword, self.exact, self.sensitivity)
+            temp = self.matches
             if sort:
-                data = dict(sorted(data.items(), reverse=reverse))
-            return json.dumps(data, indent=self.indent, ensure_ascii=False)
+                temp = dict(sorted(temp.items(), reverse=reverse))
+            # clears query data after the operation
+            self.query_complete = False
+            self.operation = None
+            self.child = None
+            self.keyword = None
+            self.exact = None
+            self.sensitivity = None
+            self.matches = None
+            return temp
+            return json.dumps(temp, indent=self.indent, ensure_ascii=False)
     
     def save(self, filepath=None):
         with self.lock:
-            self.filepath = _validate_filepath(filepath)
             _write_json(self.filepath, self, indent=self.indent, autosort=self.autosort, reverse=self.reverse)
         return self
+
+def _query(collection, operation, child, keyword, exact, sensitivity):
+    matches = {}
+    if operation not in ("matches", "exclude"):
+        return collection
+    sensitivity = isinstance(sensitivity, bool) and bool(sensitivity)
+    def evaluate(operation, keyword, value):
+        evaluation = (keyword == value)
+        if not exact:
+            if type(value) not in (str, list, set, tuple, dict):
+                value = str(value)
+            evaluation = (keyword in value)
+        if operation == "matches":
+            return evaluation
+        return not evaluation
+    for parent, data in collection.items():
+        value = parent
+        if child is not None:
+            value = data.get(child, None)
+        if not sensitivity:
+            keyword = keyword.lower()
+            value = value.lower()
+        if evaluate(operation, keyword, value):
+            matches.update({parent: data})
+    return matches
 
 def _flattener(data):
     out = {}

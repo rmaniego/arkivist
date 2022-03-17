@@ -14,17 +14,17 @@ class Arkivist(dict):
         if isinstance(data, dict):
             self.update(data)
         elif isinstance(data, str) and (filepath is None):
+            data = None
             filepath = data
+        self.autosave = False
         self.filepath = _validate_filepath(filepath)
         if self.filepath is not None:
             data = _read_json(self.filepath)
             if not len(self) and data is None:
                 self.reload()
+            self.autosave = isinstance(autosave, bool) and bool(autosave)
         self.indent = indent if indent in (1, 2, 3, 4) else 4
         self.autosort = isinstance(autosort, bool) and bool(autosort)
-        self.autosave = False
-        if self.filepath is not None:
-            self.autosave = isinstance(autosave, bool) and bool(autosave)
         self.reverse = isinstance(reverse, bool) and bool(reverse)
         self.lock = threading.RLock()
         self.extensions = ["json", "arkivist"]

@@ -199,6 +199,8 @@ def _write_json(filepath, data, indent=4, autosort=False, reverse=False):
     indent = indent if indent in (1, 2, 3, 4) else 4
     if filepath is None:
         return
+    if data is None:
+        return
     data = dict(data)
     if isinstance(autosort, bool) and bool(autosort):
         reverse = isinstance(reverse, bool) and bool(reverse)

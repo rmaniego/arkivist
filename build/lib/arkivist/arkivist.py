@@ -14,7 +14,7 @@ class Arkivist(dict):
         if isinstance(data, dict):
             self.update(data)
         elif isinstance(data, str) and (filepath is None):
-            filepath = filepath
+            filepath = data
         self.filepath = _validate_filepath(filepath)
         if self.filepath is not None:
             data = _read_json(self.filepath)
@@ -198,6 +198,8 @@ def _write_json(filepath, data, indent=4, autosort=False, reverse=False):
     filepath = _validate_filepath(filepath)
     indent = indent if indent in (1, 2, 3, 4) else 4
     if filepath is None:
+        return
+    if data is None:
         return
     data = dict(data)
     if isinstance(autosort, bool) and bool(autosort):

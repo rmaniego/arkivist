@@ -1,5 +1,8 @@
 from arkivist import Arkivist
 
+dataset = Arkivist("db/perplexedfruitbat.weatherman.weather.json")
+print("Test:", dataset)
+
 
 ## Example #2 / autosave = True (default)
 print("\nTest #2")

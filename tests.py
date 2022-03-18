@@ -204,5 +204,13 @@ test.set("number", 100)
 print("Doublecheck (100):", test.doublecheck("number", 100))
 print("Doublecheck (101):", test.doublecheck("number", 101))
 
+## Example #19
+print("\nTest #19")
+test = Arkivist("tests.json").reset()
+test.set("names", {})
+test.find("names").set("maria", 1)
+test.find("names").set("pedro", 1)
+print("Names:", test.string())
+
 
 

@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: arkivist
-Version: 1.1.41
+Version: 1.1.42
 Summary: Arkivist, a Python Dictionary wrapper for JSON files.
 Home-page: https://github.com/rmaniego/arkivist
 Author: Rodney Maniego Jr.
@@ -33,14 +33,14 @@ Arkivist is a play on the word Archive, which means a collection of historical d
 
 `pip install arkivist --upgrade`
 
-Current version is 1.1.34, but more updates are coming soon. Installing it will also install required packages including *requests*.
+Current version is 1.1.42, but more updates are coming soon. Installing it will also install required packages including *requests*.
 
 This is compatible with Python 3.6+ and is already used in various personal projects.
 
 ## Use-cases
-**1.** Need a lightweight data storage with zero application installations.
-**2.** The project is for personal or hobby with low number of users who simultaneously access the data storage.
-**3.** The project requires something that has a fast learning curve due to resource or time constraints.
+**1.** Need a lightweight data storage with zero application installations. 
+**2.** The project is for personal or hobby with low number of users who simultaneously access the data storage. 
+**3.** The project requires a data storage that has a fast learning curve due to resource or time constraints. 
 
 ## Usage
 **1. Import Package**
@@ -48,92 +48,88 @@ This is compatible with Python 3.6+ and is already used in various personal proj
 from arkivist import Arkivist
 ```
 
-**2. Instantiate JSON file**
+**2. Cast Python Dictionary to Arkivist object**
 ```python
-# Load existing dict object
-data = Arkivist({"hello": "world"})
+message = Arkivist({"hello": "world"})
 
-# Read from file
-data = Arkivist("myStorage") # or "myStorage.json"
+data = {"a": "Ant", "b": "Bug", "c": "Cat"}
+animals = Arkivist(data, filepath="animals.json")
 ```
 
-**3. Add new entry**
+**3. Instantiate data from existing JSON file**
 ```python
-# basic add entry
+storage = Arkivist("storage.json") # or "myStorage.json"
+```
+
+**4. Set JSON File indentation**
+```python
+# indent = 1, 2, 3, or 4
+storage = Arkivist("storage.json", indent=2)
+```
+
+**5. Customize sorting options**
+```python
+storage = Arkivist("storage.json", autosort=True, reverse=False)
+```
+
+**6. Disable Autosave**
+```python
+storage = Arkivist("storage.json", autosave=False)
+storage.save()
+storage.save(filepath="storage-copy.json")
+```
+
+**7. Add new entry**
+```python
 places= Arkivist("data/places.json")
 places.set(1, "Sun")
 places.set(2, "Earth")
 places.set(3, "Moon")
-print(places.show())
 
-# json update format
+# native update format
 people = Arkivist("data/people.json")
 people.update({"juan": {"name": "Juan Dela Cruz"}})
 people.update({"maria": {"name": "Maria Dela Cruz"}})
-print(people.show())
 ```
 
-**4. Get all data, reload from JSON file**
+**8. Get dictionary object**
 ```python
-places1 = Arkivist("data/places.json")
-places2 = Arkivist("data/places.json")
-
-print(places1.show())
-print(places1.show(sorted=True))
-print(places1.show(sorted=True, reverse=True))
-
-places1.set(4, "Mars")
-print(places1.show())
-print(places2.show())
-places2.reload() # reload updates
-print(places2.show())
+places = Arkivist("data/places.json")
+print(places.show())
 ```
 
-**6. Remove item / Clear all data**
+**9. Generate JSON-compliant string**
+```python
+places = Arkivist("data/places.json")
+print(places.string())
+```
+
+**10. Clear dictionary data**
 ```python
 places = Arkivist("data/places.json", autosave=False)
-
-# clear
 places.reset()
-print(places.show())
-
-# populate
-places.set(1, "Sun")
-places.set(2, "Earth")
-places.set(3, "Moon")
-
-print("All:", places.show())
-places.pop(1) # remove item
-print("No Sun:", places.show())
 ```
 
-**7. Manual save to file**
+**11. Replace all contents**
 ```python
-people = Arkivist("data/people.json", autosave=False)
-people.set("boy", {"name": "Boy"})
-people.set("girl", {"name": "Girl"})
-people.save()
-
-# save to another file
-people.set("ufo", {"name": "UFO"})
-people.save(filepath="people_and_other_creatures.json")
-```
-
-**8. Replace all contents**
-```python
-# replace from a valid dictionary and replaces previous contents
+# replace from a valid dictionary
 people = Arkivist("data/people.json")
 friends = {"friend": {"name": "Friend"}, "enemy": {"name": "Enemy"}}
-people.replace(friends)
-print(people.show())
+people.load(friends)
 
-# load from valid JSON string and replaces previous contents
+# load from valid JSON string
 anons = "{\"robot\": {\"name\": \"Robot\"}, \"ghost\": {\"name\": \"Ghost\"}}"
 people.load(anons)
-print(people.show())
 ```
 
-**9. Flatten the nested dictionary**
+**12. Check if empty or not**
+```python
+## do not save to file
+people = Arkivist("data/people.json").reset()
+print("Count:", people.count(), "; Is empty: ", people.is_empty())
+```
+
+**13. Flatten the nested dictionary**
 ```python
 people = Arkivist("data/people.json")
 people.set("juan", {"name": "Juan Dela Cruz"})
@@ -141,35 +137,60 @@ people.set("maria", {"name": "Maria Dela Cruz"})
 print(people.flatten())
 ```
 
-**10. Fetch from a web API**
+**14. Fetch from a web API**
 ```python
 todos = Arkivist() # autosave = False, data is only in memory
 todos.fetch("https://jsonplaceholder.typicode.com/todos/1")
 print(todos.show())
 ```
 
-**11. Check if empty or not**
+**15. Get random key-value pair**
 ```python
-## do not save to file
-people = Arkivist("data/people.json").reset()
-print("Count:", people.count(), "; Is empty: ", people.is_empty())
+names = Arkivist("names.json").reset()
+names.set("abc", {"name": "Abc"})
+names.set("dog", {"name": "Doggy"})
+names.set("juan", {"names": "Juan"})
+print("Random item:", names.random())
 ```
 
-**16. Get random key-value pair**
-```python
-people = Arkivist("people.json").reset()
-people.set("abc", {"name": "Abc"})
-people.set("dog", {"name": "Doggy"})
-people.set("juan", {"name": "Juan"})
-print("Random item:", people.random())
-```
-
-**17. Double check if expected key value is correct**
+**16. Double check if expected key value is correct**
 ```python
 numbers = Arkivist("numbers.json").reset()
 numbers.set("one": 1)
 print("Doublecheck (1):", numbers.doublecheck("one", 1))
 print("Doublecheck (2):", numbers.doublecheck("one", 2))
+```
+
+**16. Perform shallow queries**
+```python
+names = Arkivist("names.json")
+names.set("abc", {"name": "Abc"})
+names.set("dog", {"name": "Doggy"})
+names.set("juan", {"name": "Juan"})
+
+# exact match
+for name, data in names.where("name", "Abc").query():
+    print(name, data)
+
+# search containing the substring
+for name, data in names.where("name", "a", exact=False).query():
+    print(name, data)
+
+# search containing the substring, case sensitivity = False
+for name, data in names.where("name", "a", exact=False, sensitivity=False).query():
+    print(name, data)
+
+# search excluding the exact keyword
+for name, data in names.where("name").exclude("Abc").query():
+    print(name, data)
+
+# search excluding the items containing the keyword
+for name, data in names.where("name").exclude("a", exact=False).query():
+    print(name, data)
+
+# search excluding the items containing the keyword, case sensitivity = False
+for name, data in names.where("name").exclude("A", exact=False, sensitivity=False).query():
+    print(name, data)
 ```
 
 ## Futures

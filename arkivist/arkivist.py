@@ -26,6 +26,10 @@ class Arkivist(dict):
         self.autosort = isinstance(autosort, bool) and bool(autosort)
         self.reverse = isinstance(reverse, bool) and bool(reverse)
         self.extensions = ["json", "arkivist"]
+
+        # searching properties
+        self.parent = None
+
         # querying properties
         self.query_complete = False
         self.operation = None
@@ -35,9 +39,20 @@ class Arkivist(dict):
         self.sensitivity = False
         self.matches = None
     
+    def find(self, parent):
+        with self.lock:
+            self.parent = None
+            if parent in self:
+                self.parent = parent
+        return self
+    
     def set(self, key, value):
         with self.lock:
-            self.update({key: value})
+            if self.parent is not None:
+                if self.parent in self:
+                    self[self.parent][key] = value
+            else:
+                self[key] = value
             if self.autosave:
                 _write_json(self.filepath, self, indent=self.indent, autosort=self.autosort, reverse=self.reverse)
         return self
@@ -64,9 +79,15 @@ class Arkivist(dict):
 
     def get(self, key, default=None):
         with self.lock:
-            if key in self:
-                if self[key] is not None:
-                    return self[key]
+            if self.parent is not None:
+                if self.parent in self:
+                    if isinstance((temp:=self[self.parent]), dict):
+                        if key in temp:
+                            return temp[key]
+            else:
+                if key in self:
+                    if self[key] is not None:
+                        return self[key]
             return default
 
     def __getitem__(self, key):

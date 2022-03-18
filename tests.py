@@ -210,7 +210,7 @@ test = Arkivist("tests.json").reset()
 test.set("names", {})
 test.find("names").set("maria", 1)
 test.find("names").set("pedro", 1)
-print("Names:", test.string())
+print("Names:", test.find("names").get("juan", 0))
 
 
 

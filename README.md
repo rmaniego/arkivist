@@ -173,6 +173,15 @@ for name, data in names.where("name").exclude("A", exact=False, sensitivity=Fals
     print(name, data)
 ```
 
+**17. Find child of parent**
+```python
+names = Arkivist("names.json").reset()
+names.set("names", {})
+names.find("names").set("maria", 1)
+print("Maria:", names.find("names").get("maria", 0))
+print("Pedro:", names.find("names").get("pedro", 0))
+```
+
 ## Futures
 Arkivist is an ongoing project and new features will be added in the future. In the future, it aims to add complex querying and also add a security layer to protect data from unauthorized access.
 

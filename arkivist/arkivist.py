@@ -94,6 +94,29 @@ class Arkivist(dict):
         with self.lock:
             if key in self:
                 return dict.__getitem__(self, key)
+    
+    def appendIn(self, key, value):
+        with self.lock:
+            if self.parent is not None:
+                if self.parent in self:
+                    if key not in self[self.parent]:
+                        self[self.parent][key] = []
+                    if isinstance(self[self.parent][key], list):
+                        if type(value) in (list, set, tuple):
+                            self[self.parent][key].extend(value)
+                        else:
+                            self[self.parent][key].append(value)
+            else:
+                if key not in self:
+                    self[key] = []
+                if isinstance(self[key], list):
+                    if type(value) in (list, set, tuple):
+                        self[key].extend(value)
+                    else:
+                        self[key].append(value)
+            if self.autosave:
+                _write_json(self.filepath, self, indent=self.indent, autosort=self.autosort, reverse=self.reverse)
+        return self
 
     def random(self):
         with self.lock:

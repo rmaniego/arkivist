@@ -182,6 +182,16 @@ print("Maria:", names.find("names").get("maria", 0))
 print("Pedro:", names.find("names").get("pedro", 0))
 ```
 
+**18. Append/Extend list children**
+```python
+test = Arkivist("tests.json").reset()
+test.appendIn("colors", "red")
+test.appendIn("colors", ("blue", "green"))
+test.set("numbers", {})
+test.find("numbers").appendIn("odd", 1)
+test.find("numbers").appendIn("odd", (1, 3, 5, [7]))
+```
+
 ## Futures
 Arkivist is an ongoing project and new features will be added in the future. In the future, it aims to add complex querying and also add a security layer to protect data from unauthorized access.
 

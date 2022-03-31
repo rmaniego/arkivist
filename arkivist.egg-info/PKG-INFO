@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: arkivist
-Version: 1.1.43
+Version: 1.1.44
 Summary: Arkivist, a Python Dictionary wrapper for JSON files.
 Home-page: https://github.com/rmaniego/arkivist
 Author: Rodney Maniego Jr.
@@ -191,6 +191,25 @@ for name, data in names.where("name").exclude("a", exact=False).query():
 # search excluding the items containing the keyword, case sensitivity = False
 for name, data in names.where("name").exclude("A", exact=False, sensitivity=False).query():
     print(name, data)
+```
+
+**17. Find child of parent**
+```python
+names = Arkivist("names.json").reset()
+names.set("names", {})
+names.find("names").set("maria", 1)
+print("Maria:", names.find("names").get("maria", 0))
+print("Pedro:", names.find("names").get("pedro", 0))
+```
+
+**18. Append/Extend list children**
+```python
+test = Arkivist("tests.json").reset()
+test.appendIn("colors", "red")
+test.appendIn("colors", ("blue", "green"))
+test.set("numbers", {})
+test.find("numbers").appendIn("odd", 1)
+test.find("numbers").appendIn("odd", (1, 3, 5, [7]))
 ```
 
 ## Futures

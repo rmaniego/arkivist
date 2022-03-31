@@ -95,8 +95,10 @@ class Arkivist(dict):
             if key in self:
                 return dict.__getitem__(self, key)
     
-    def appendIn(self, key, value):
+    def appendIn(self, key, value, unique=False, sort=False):
         with self.lock:
+            unique = isinstance(unique, bool) and bool(unique)
+            sort = isinstance(sort, bool) and bool(sort)
             if self.parent is not None:
                 if self.parent in self:
                     if key not in self[self.parent]:
@@ -106,6 +108,16 @@ class Arkivist(dict):
                             self[self.parent][key].extend(value)
                         else:
                             self[self.parent][key].append(value)
+                        try:
+                            if sort:
+                                self[self.parent][key] = list(sorted(self[self.parent][key]))
+                        except:
+                            pass
+                        try:
+                            if unique:
+                                self[self.parent][key] = list(set(self[self.parent][key]))
+                        except:
+                            pass
             else:
                 if key not in self:
                     self[key] = []
@@ -113,7 +125,34 @@ class Arkivist(dict):
                     if type(value) in (list, set, tuple):
                         self[key].extend(value)
                     else:
-                        self[key].append(value)
+                        self[key].append(value)                    
+                    try:
+                        if sort:
+                            self[key] = list(sorted(self[key]))
+                    except:
+                        pass
+                    try:
+                        if unique:
+                            self[key] = list(set(self[key]))
+                    except:
+                        pass
+            if self.autosave:
+                _write_json(self.filepath, self, indent=self.indent, autosort=self.autosort, reverse=self.reverse)
+        return self
+    
+    def removeIn(self, key, value       ):
+        with self.lock:
+            if type(value) not in (list, set, tuple):
+                value = [value]
+            if self.parent is not None:
+                if self.parent in self:
+                    if key in self[self.parent]:
+                        if isinstance(self[self.parent][key], list):
+                            self[self.parent][key] = list(set(self[self.parent][key]) - set(value))
+            else:
+                if key in self:
+                    if isinstance(self[key], list):
+                        self[key] = list(set(self[key]) - set(value))
             if self.autosave:
                 _write_json(self.filepath, self, indent=self.indent, autosort=self.autosort, reverse=self.reverse)
         return self

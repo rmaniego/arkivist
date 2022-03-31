@@ -182,14 +182,21 @@ print("Maria:", names.find("names").get("maria", 0))
 print("Pedro:", names.find("names").get("pedro", 0))
 ```
 
-**18. Append/Extend list children**
+**18. Append/Extend/Remove items in list**
 ```python
 test = Arkivist("tests.json").reset()
+
 test.appendIn("colors", "red")
-test.appendIn("colors", ("blue", "green"))
+test.appendIn("colors", "orange")
+test.appendIn("colors", "yellow")
+test.appendIn("colors", ("blue", "green"), unique=True, sort=True)
+test.removeIn("colors", "yellow")
+test.removeIn("colors", ("blue", "purple"))
+
 test.set("numbers", {})
 test.find("numbers").appendIn("odd", 1)
 test.find("numbers").appendIn("odd", (1, 3, 5, [7]))
+
 ```
 
 ## Futures

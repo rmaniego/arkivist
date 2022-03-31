@@ -215,13 +215,17 @@ print("Names:", test.find("names").get("juan", 0))
 ## Example #19
 print("\nTest #20")
 test = Arkivist("tests.json").reset()
+
 test.appendIn("colors", "red")
-test.appendIn("colors", "blue")
-test.appendIn("colors", "green")
-test.appendIn("colors", ("orange", "purple"))
+test.appendIn("colors", "orange")
+test.appendIn("colors", "yellow")
+test.appendIn("colors", ("blue", "green"), unique=True, sort=True)
+test.removeIn("colors", "yellow")
+test.removeIn("colors", ("blue", "purple"))
+
 test.set("numbers", {})
+test.find("numbers").appendIn("odd", 1)
 test.find("numbers").appendIn("odd", (1, 3, 5, [7]))
-test.find("even").appendIn("numbers", 2)
 print("Lists:", test.show())
 
 

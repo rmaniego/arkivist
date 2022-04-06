@@ -5,9 +5,6 @@ Arkivist is Python Dictionary wrapper for JSON files.
 
 Other behaviors are similar to native Python dictionaries, the tutorial below only covers add-on feature specific to Arkivist.
 
-## Fun fact
-Arkivist is a play on the word Archive, which means a collection of historical documents or records. Arkivist is like your digital librarian that manages your important data for a lightweight and organized data storage.
-
 ## Official Release
 **Arkivist** can now be used on your Python projects through PyPi by running pip command on a Python-ready environment.
 
@@ -204,3 +201,6 @@ Arkivist is an ongoing project and new features will be added in the future. In 
 
 ## Conclusion
 Arkivist allows you to build your Python apps with a lightweight data storage, this can come handy especially when you are doing personal and hobby projects that handles simple data.
+
+## Fun fact
+Arkivist is a play on the word Archive, which means a collection of historical documents or records. Arkivist is like your digital librarian that manages your important data for a lightweight and organized data storage.

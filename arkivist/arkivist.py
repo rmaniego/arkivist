@@ -323,17 +323,16 @@ def _query(collection, operation, child, keyword, exact, sensitivity):
     def evaluate(operation, keyword, value):
         evaluation = (keyword == value)
         if not exact:
-            if type(value) not in (str, list, set, tuple, dict):
-                value = str(value)
-            evaluation = (keyword in value)
+            if type(value) in (str, list, set, tuple, dict):
+                evaluation = (keyword in value)
         if operation == "matches":
             return evaluation
         return not evaluation
     for parent, data in collection.items():
-        value = parent
+        value = None
         if child is not None:
             value = data.get(child, None)
-        if not sensitivity:
+        if not sensitivity and isinstance(value, str):
             keyword = keyword.lower()
             value = value.lower()
         if evaluate(operation, keyword, value):

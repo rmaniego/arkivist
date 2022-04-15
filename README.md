@@ -10,9 +10,9 @@ Other behaviors are similar to native Python dictionaries, the tutorial below on
 
 `pip install arkivist --upgrade`
 
-Current version is 1.1.42, but more updates are coming soon. Installing it will also install required packages including *requests*.
+Current version is 1.2.0, but more updates are coming soon. Installing it will also install required packages including *requests*.
 
-This is compatible with Python 3.6+ and is already used in various personal projects.
+This is compatible with Python 3.9+ and is already used in various personal projects.
 
 ## Use-cases
 **1.** Need a lightweight data storage with zero application installations. 
@@ -34,8 +34,9 @@ animals = Arkivist(data, filepath="animals.json")
 ```
 
 **3. Instantiate data from existing JSON file**
+> By default, autosave is set to True. To optimize, set autosave to False and perform manual saving after completely performing operations.
 ```python
-storage = Arkivist("storage.json") # or "myStorage.json"
+storage = Arkivist("storage.json")
 ```
 
 **4. Set JSON File indentation**
@@ -53,7 +54,7 @@ storage = Arkivist("storage.json", autosort=True, reverse=False)
 ```python
 storage = Arkivist("storage.json", autosave=False)
 storage.save()
-storage.save(filepath="storage-copy.json")
+storage.save(save_as="storage-copy.json")
 ```
 
 **7. Add new entry**
@@ -183,17 +184,35 @@ print("Pedro:", names.find("names").get("pedro", 0))
 ```python
 test = Arkivist("tests.json").reset()
 
-test.appendIn("colors", "red")
-test.appendIn("colors", "orange")
-test.appendIn("colors", "yellow")
-test.appendIn("colors", ("blue", "green"), unique=True, sort=True)
-test.removeIn("colors", "yellow")
-test.removeIn("colors", ("blue", "purple"))
+test.append_in("colors", "red")
+test.append_in("colors", "orange")
+test.append_in("colors", "yellow")
+test.append_in("colors", ("blue", "green"), unique=True, sort=True)
+test.remove_in("colors", "yellow")
+test.remove_in("colors", ("blue", "purple"))
 
 test.set("numbers", {})
-test.find("numbers").appendIn("odd", 1)
-test.find("numbers").appendIn("odd", (1, 3, 5, [7]))
+test.find("numbers").append_in("odd", 1)
+test.find("numbers").append_in("odd", (1, 3, 5, [7]))
+```
 
+**19. Encrypt JSON file**
+> NOTE: Copy and securely store the auto-generated authetication file to maintain access to the JSON file. Otherwise, the actual data from the JSON file can no longer be accessed. Without the secure key, reading, writing, and decryption will not be allowed. If the authfile is invalid or not set, check for the filename of the auto-generated file and rename as needed and update the filename to your program source code to access the JSON file again.
+```python
+
+# Set the filename of the authentication file
+weather = Arkivist("temp/encrypted.json", authfile="secret-key.txt")
+
+# To encrypt data, use the encrypt function
+weather.encrypt()
+
+# Perform normal operations as needed
+weather.set("weather", {})
+weather.find("weather").set("2022-04-14", "Cloudy")
+weather.find("weather").set("2022-04-15", "Sunny")
+
+# to unencrypt, set to false
+weather.encrypt(False)
 ```
 
 ## Futures

@@ -2,86 +2,130 @@
     (c) 2020 Rodney Maniego Jr.
     Arkivist
 """
+
 import json
-import random
+import time
+import getpass
 import requests
 import threading
 from random import randint
+from cryptography.fernet import Fernet
+
 
 class Arkivist(dict):
-    def __init__(self, data=None, filepath=None, indent=4, autosave=True, autosort=False, reverse=False, **legacy):
+    """ Manage and manipulate JSON objects. """
+    def __init__(self,
+                data=None,
+                filepath=None,
+                indent=4,
+                autosave=True,
+                autosort=False,
+                reverse=False,
+                authfile=None,
+                **legacy):
+
+        self._save_as = None
+        self._filepath = None
         if isinstance(data, dict):
             self.update(data)
+            if isinstance(filepath, str):
+                self._filepath = filepath
         elif isinstance(data, str) and (filepath is None):
-            filepath = data
-        self.autosave = False
-        self.lock = threading.RLock()
-        self.filepath = _validate_filepath(filepath)
-        if self.filepath is not None:
-            temp = _read_json(self.filepath)
-            if not len(self) and temp is not None:
-                self.reload()
-            self.autosave = isinstance(autosave, bool) and bool(autosave)
-        self.indent = indent if indent in (1, 2, 3, 4) else 4
-        self.autosort = isinstance(autosort, bool) and bool(autosort)
-        self.reverse = isinstance(reverse, bool) and bool(reverse)
-        self.extensions = ["json", "arkivist"]
+            self._filepath = data
+        
+        self._autosave = isinstance(autosave, bool) and bool(autosave)
+        self._lock = threading.RLock()
+
+        # encryption
+        self._cypher = None
+        self._encrypted = False
+        self._authfile = None
+        if isinstance(authfile, str):
+            self._authfile = authfile
+
+        if self._filepath is not None:
+            self._encrypted, _ = _read_json(self._filepath)
+            if self._encrypted:
+                self._cypher = _load_cypher(self._authfile)
+                if not len(self):
+                    _, temp = _read_json(self._filepath, self._cypher)
+                    if len(temp):
+                        self.clear()
+                        self.update(temp)
+        
+        self._indent = indent
+        self._reverse = reverse
+        self._autosort = autosort
 
         # searching properties
-        self.parent = None
+        self._parent = None
 
         # querying properties
-        self.query_complete = False
-        self.operation = None
-        self.child = None
-        self.keyword = None
-        self.exact = True
-        self.sensitivity = False
-        self.matches = None
-    
+        self._query_complete = False
+        self._operation = None
+        self._child = None
+        self._keyword = None
+        self._exact = True
+        self._sensitivity = False
+        self._matches = None
+        
+        if not len(self):
+            _write_json(self)
+
+    def encrypt(self, state=True):
+        """ Set Encrypt/Decrypt configuration for JSON file"""
+        if not self._encrypted and state:
+            self._encrypted = True
+            # create dynamic filename if custom filename is invalid
+            self._authfile = _new_encryption_key(self._authfile)
+            self._cypher = _load_cypher(self._authfile)
+        elif (self._encrypted and self._cypher is not None) and not state:
+            self._encrypted = False
+            self._cypher = None
+
     def find(self, parent):
-        with self.lock:
-            self.parent = None
+        with self._lock:
+            self._parent = None
             if parent in self:
-                self.parent = parent
-        return self
+                self._parent = parent
+            return self
     
     def set(self, key, value):
-        with self.lock:
-            if self.parent is not None:
-                if self.parent in self:
-                    self[self.parent][key] = value
+        with self._lock:
+            if self._parent is not None:
+                if self._parent in self:
+                    self[self._parent][key] = value
             else:
                 self[key] = value
-            if self.autosave:
-                _write_json(self.filepath, self, indent=self.indent, autosort=self.autosort, reverse=self.reverse)
-        return self
+            if self._autosave:
+                _write_json(self)
+            return self
 
     def __setitem__(self, key, value):
-        with self.lock:
+        with self._lock:
             dict.__setitem__(self, key, value)
-            if self.autosave:
-                _write_json(self.filepath, self, indent=self.indent, autosort=self.autosort, reverse=self.reverse)
-        return self
+            if self._autosave:
+                _write_json(self)
+            return self
 
     def fetch(self, url, extend=False):
-        with self.lock:
+        with self._lock:
             if extend:
                 self.clear()
             try:
                 with requests.get(url) as source:
                     self.update(source.json())
-                if self.autosave:
-                    _write_json(self.filepath, self, indent=self.indent, autosort=self.autosort, reverse=self.reverse)
+                if self._autosave:
+                    _write_json(self)
             except:
                 pass
-        return self
+            return self
 
     def get(self, key, default=None):
-        with self.lock:
-            if self.parent is not None:
-                if self.parent in self:
-                    if isinstance((temp:=self[self.parent]), dict):
+        with self._lock:
+            if self._parent is not None:
+                if self._parent in self:
+                    if isinstance((temp:=self[self._parent]), dict):
                         if key in temp:
                             return temp[key]
             else:
@@ -91,31 +135,31 @@ class Arkivist(dict):
             return default
 
     def __getitem__(self, key):
-        with self.lock:
+        with self._lock:
             if key in self:
                 return dict.__getitem__(self, key)
     
-    def appendIn(self, key, value, unique=False, sort=False):
-        with self.lock:
+    def append_in(self, key, value, unique=False, sort=False):
+        with self._lock:
             unique = isinstance(unique, bool) and bool(unique)
             sort = isinstance(sort, bool) and bool(sort)
-            if self.parent is not None:
-                if self.parent in self:
-                    if key not in self[self.parent]:
-                        self[self.parent][key] = []
-                    if isinstance(self[self.parent][key], list):
+            if self._parent is not None:
+                if self._parent in self:
+                    if key not in self[self._parent]:
+                        self[self._parent][key] = []
+                    if isinstance(self[self._parent][key], list):
                         if type(value) in (list, set, tuple):
-                            self[self.parent][key].extend(value)
+                            self[self._parent][key].extend(value)
                         else:
-                            self[self.parent][key].append(value)
+                            self[self._parent][key].append(value)
                         try:
                             if sort:
-                                self[self.parent][key] = list(sorted(self[self.parent][key]))
+                                self[self._parent][key] = list(sorted(self[self._parent][key]))
                         except:
                             pass
                         try:
                             if unique:
-                                self[self.parent][key] = list(set(self[self.parent][key]))
+                                self[self._parent][key] = list(set(self[self._parent][key]))
                         except:
                             pass
             else:
@@ -136,68 +180,68 @@ class Arkivist(dict):
                             self[key] = list(set(self[key]))
                     except:
                         pass
-            if self.autosave:
-                _write_json(self.filepath, self, indent=self.indent, autosort=self.autosort, reverse=self.reverse)
-        return self
+            if self._autosave:
+                _write_json(self)
+            return self
     
-    def removeIn(self, key, value       ):
-        with self.lock:
+    def remove_in(self, key, value):
+        with self._lock:
             if type(value) not in (list, set, tuple):
                 value = [value]
-            if self.parent is not None:
-                if self.parent in self:
-                    if key in self[self.parent]:
-                        if isinstance(self[self.parent][key], list):
-                            self[self.parent][key] = list(set(self[self.parent][key]) - set(value))
+            if self._parent is not None:
+                if self._parent in self:
+                    if key in self[self._parent]:
+                        if isinstance(self[self._parent][key], list):
+                            self[self._parent][key] = list(set(self[self._parent][key]) - set(value))
             else:
                 if key in self:
                     if isinstance(self[key], list):
                         self[key] = list(set(self[key]) - set(value))
-            if self.autosave:
-                _write_json(self.filepath, self, indent=self.indent, autosort=self.autosort, reverse=self.reverse)
-        return self
+            if self._autosave:
+                _write_json(self)
+            return self
 
     def random(self):
-        with self.lock:
+        with self._lock:
             if len(self):
                 index = randint(0, len(self)-1)
                 key = list(self.keys())[index]
                 return dict({key: self.get(key)})
-        return {}
+            return {}
     
     def count(self):
-        with self.lock:
+        with self._lock:
             return len(self)
     
     def is_empty(self):
-        with self.lock:
+        with self._lock:
             return not bool(self)
 
     def doublecheck(self, key, value):
-        with self.lock:
+        with self._lock:
             if key in self:
                 return self[key] == value
-        return False
+            return False
     
     def flatten(self):
-        with self.lock:
+        with self._lock:
             return _flattener(dict(self))
 
     def invert(self):
-        with self.lock:
+        with self._lock:
             try:
                 # hashable keys / values
                 temp = dict(self)
                 self.clear()
                 self.update(dict(zip(temp.values(), temp.keys())))
-                if self.autosave:
-                    _write_json(self.filepath, self, indent=self.indent, autosort=self.autosort, reverse=self.reverse)
+                if self._autosave:
+                    _write_json(self)
             except:
                 pass
-        return self
+            return self
     
     def load(self, data):
-        with self.lock:
+        with self._lock:
             self.clear()
             if isinstance(data, dict):
                 self.update(data)
@@ -206,114 +250,117 @@ class Arkivist(dict):
                     self.update(json.loads(data))
                 except:
                     pass
-            if self.autosave:
-                _write_json(self.filepath, self, indent=self.indent, autosort=self.autosort, reverse=self.reverse)
-        return self
+            if self._autosave:
+                _write_json(self)
+            return self
     
     def reload(self):
-        with self.lock:
-            self.clear()
-            self.update(_read_json(self.filepath))
-        return self
+        with self._lock:
+            _, temp = _read_json(self._filepath, self._cypher)
+            if len(temp):
+                self.clear()
+                self.update(temp)
+            return self
     
     def reset(self):
-        with self.lock:
+        with self._lock:
             self.clear()
-            if self.autosave:
-                _write_json(self.filepath, self, indent=self.indent, autosort=self.autosort, reverse=self.reverse)
-        return self
+            if self._autosave:
+                _write_json(self)
+            return self
     
     # quering methods
     def where(self, child, keyword=None, exact=False, sensitivity=True):
-        with self.lock:
-            self.operation = "matches"
-            self.child = child
-            self.keyword = keyword
-            self.exact = exact
-            self.sensitivity = sensitivity
-            self.query_complete = False
+        with self._lock:
+            self._operation = "matches"
+            self._child = child
+            self._keyword = keyword
+            self._exact = exact
+            self._sensitivity = sensitivity
+            self._query_complete = False
             if keyword is not None:
-                if self.matches is None:
-                    self.matches = dict(self)
-                self.matches = _query(self.matches, self.operation, self.child, self.keyword, self.exact, self.sensitivity)
-                self.query_complete = True
-        return self
+                if self._matches is None:
+                    self._matches = dict(self)
+                self._matches = _query(self._matches, self._operation, self._child, self._keyword, self._exact, self._sensitivity)
+                self._query_complete = True
+            return self
     
     def exclude(self, keyword=None, exact=False, sensitivity=True):
-        with self.lock:
-            self.operation = "exclude"
-            self.keyword = keyword
-            self.exact = exact
-            self.sensitivity = sensitivity
-            if self.matches is None:
-               self.matches = dict(self)
-            self.matches = _query(self.matches, self.operation, self.child, self.keyword, self.exact, self.sensitivity)
-            self.query_complete = True
-        return self
+        with self._lock:
+            self._operation = "exclude"
+            self._keyword = keyword
+            self._exact = exact
+            self._sensitivity = sensitivity
+            if self._matches is None:
+               self._matches = dict(self)
+            self._matches = _query(self._matches, self._operation, self._child, self._keyword, self._exact, self._sensitivity)
+            self._query_complete = True
+            return self
     
     def query(self, sort=False, reverse=False):
-        with self.lock:
-            if self.matches is None:
-                self.matches = dict(self)
-            if self.operation is not None and not self.query_complete:
-                self.matches = _query(self.matches, self.operation, self.child, self.keyword, self.exact, self.sensitivity)
-            temp = self.matches
+        with self._lock:
+            if self._matches is None:
+                self._matches = dict(self)
+            if self._operation is not None and not self._query_complete:
+                self._matches = _query(self._matches, self._operation, self._child, self._keyword, self._exact, self._sensitivity)
+            temp = self._matches
             if sort:
                 temp = dict(sorted(temp.items(), reverse=reverse))
             # clears query data after the operation
-            self.query_complete = False
-            self.operation = None
-            self.child = None
-            self.keyword = None
-            self.exact = None
-            self.sensitivity = None
-            self.matches = None
+            self._query_complete = False
+            self._operation = None
+            self._child = None
+            self._keyword = None
+            self._exact = None
+            self._sensitivity = None
+            self._matches = None
             for key, value in temp.items():
                 yield key, value
     
     def show(self, sort=False, reverse=False):
-        with self.lock:
-            if self.matches is None:
-                self.matches = dict(self)
-            if self.operation is not None and not self.query_complete:
-                self.matches = _query(self.matches, self.operation, self.child, self.keyword, self.exact, self.sensitivity)
-            temp = self.matches
+        with self._lock:
+            if self._matches is None:
+                self._matches = dict(self)
+            if self._operation is not None and not self._query_complete:
+                self._matches = _query(self._matches, self._operation, self._child, self._keyword, self._exact, self._sensitivity)
+            temp = self._matches
             if sort:
                 temp = dict(sorted(temp.items(), reverse=reverse))
             # clears query data after the operation
-            self.query_complete = False
-            self.operation = None
-            self.child = None
-            self.keyword = None
-            self.exact = None
-            self.sensitivity = None
-            self.matches = None
+            self._query_complete = False
+            self._operation = None
+            self._child = None
+            self._keyword = None
+            self._exact = None
+            self._sensitivity = None
+            self._matches = None
             return temp
     
     def string(self, sort=False, reverse=False):
-        with self.lock:
-            if self.matches is None:
-                self.matches = dict(self)
-            if self.operation is not None and not self.query_complete:
-                self.matches = _query(self.matches, self.operation, self.child, self.keyword, self.exact, self.sensitivity)
-            temp = self.matches
+        with self._lock:
+            if self._matches is None:
+                self._matches = dict(self)
+            if self._operation is not None and not self._query_complete:
+                self._matches = _query(self._matches, self._operation, self._child, self._keyword, self._exact, self._sensitivity)
+            temp = self._matches
             if sort:
                 temp = dict(sorted(temp.items(), reverse=reverse))
             # clears query data after the operation
-            self.query_complete = False
-            self.operation = None
-            self.child = None
-            self.keyword = None
-            self.exact = None
-            self.sensitivity = None
-            self.matches = None
-            return temp
-            return json.dumps(temp, indent=self.indent, ensure_ascii=False)
+            self._query_complete = False
+            self._operation = None
+            self._child = None
+            self._keyword = None
+            self._exact = None
+            self._sensitivity = None
+            self._matches = None
+            return json.dumps(temp, indent=self._indent, ensure_ascii=False)
     
-    def save(self, filepath=None):
-        with self.lock:
-            _write_json(self.filepath, self, indent=self.indent, autosort=self.autosort, reverse=self.reverse)
-        return self
+    def save(self, save_as=None):
+        with self._lock:
+            if isinstance(save_as, str):
+                self._save_as = save_as
+            _write_json(self)
+            self._save_as = None
 
 def _query(collection, operation, child, keyword, exact, sensitivity):
     matches = {}
@@ -340,6 +387,7 @@ def _query(collection, operation, child, keyword, exact, sensitivity):
     return matches
 
 def _flattener(data):
+    """ Flatten nested JSON object. """
     out = {}
     ## https://www.geeksforgeeks.org/flattening-json-objects-in-python/
     def flatten(x, name=""):
@@ -353,35 +401,93 @@ def _flattener(data):
             out[name[:-1]] = x
     flatten(data)
     return out
+            
 
-def _validate_filepath(filepath):
-    if isinstance(filepath, str):
-        if filepath.split(".")[-1] != "json":
-            filepath += ".json"
+def _new_encryption_key(authfile):
+    if not isinstance(authfile, str):
+        timestamp = str(int(time.time()))
+        authfile = f"arkivist-auth-{timestamp}.txt"
+    with open(authfile, "w+", encoding="utf-8") as f:
         try:
-            with open(filepath, "a+") as temp:
-                return filepath
+            f.write(Fernet.generate_key().decode())
+            return authfile
         except:
             pass
+    
+
+def _load_cypher(authfile):
+    filepath = _validate_filepath(authfile, extension="txt")
+    try:
+        with open(filepath, "r") as f:
+            return Fernet(f.read().encode("utf-8"))
+    except:
+        print("\nArkivistWarning: File to authfile is not found or is invalid.")
+
+def _validate_filepath(filepath, extension="json"):
+    if isinstance(filepath, str):
+        if filepath.split(".")[-1] != extension:
+            filepath += f".{extension}"
+        return filepath
     return None
 
-def _read_json(filepath):
+def _read_json(filepath, cypher=None):
+    encrypted, content = False, {}
+    filepath = _validate_filepath(filepath)
     try:
         with open(filepath, "r", encoding="utf-8") as f:
-            return json.loads(f.read())
+            keys = ("arkivist", "encryption", "content")
+            content = json.loads(f.read())
+            if isinstance(content, dict) and isinstance(keys, (list, set, tuple)):
+                if len(content) == len(keys):
+                    encrypted = not (False in [(key in content) for key in keys])
+                    if encrypted and cypher is not None:
+                        if content["arkivist"] >= 1.2 and content["encryption"] == "fernet":
+                            content = content["content"].encode("utf-8")
+                            content = json.loads(cypher.decrypt(content).decode())
+                    else:
+                        content = {}
+                    
     except:
-        return {}
+        pass
+    return encrypted, content
 
-def _write_json(filepath, data, indent=4, autosort=False, reverse=False):
-    filepath = _validate_filepath(filepath)
-    indent = indent if indent in (1, 2, 3, 4) else 4
-    if filepath is None:
-        return
+def _write_json(data):
+    """ Write JSON object as string representation into file. """
     if data is None:
         return
-    data = dict(data)
-    if isinstance(autosort, bool) and bool(autosort):
-        reverse = isinstance(reverse, bool) and bool(reverse)
-        data = dict(sorted(data.items(), reverse=reverse))
-    with open(filepath, "w+", encoding="utf-8") as f:
-        f.write(json.dumps(data, indent=indent, ensure_ascii=False))
+    filepath = _validate_filepath(data._save_as)
+    if filepath is None:
+        filepath = _validate_filepath(data._filepath)
+    if filepath is None:
+        return
+
+    dataset = dict(data)
+    if isinstance(data._autosort, bool) and bool(data._autosort):
+        reverse = isinstance(data._reverse, bool) and bool(data._reverse)
+        dataset = dict(sorted(dataset.items(), reverse=reverse))
+    
+    # string representation of the JSON object
+    indent = data._indent if data._indent in (0, 1, 2, 3, 4) else 4
+    content = json.dumps(dataset, indent=indent, ensure_ascii=False)
+
+    encrypted = isinstance(data._encrypted, bool) and bool(data._encrypted)
+    if encrypted:
+        if data._cypher is None:
+            print("ArkivistWarning: _incorrect authfile was set, changes to file is disabled.")
+            return
+        try:
+            dataset = {}
+            dataset["arkivist"] = 1.2
+            dataset["encryption"] = "fernet"
+            dataset["content"] = data._cypher.encrypt(content.encode("utf-8")).decode()
+            content = json.dumps(dataset, indent=indent, ensure_ascii=False)
+        except:
+            return
+
+    try:
+        with open(filepath, "w+", encoding="utf-8") as f:
+            f.write(content)
+    except:
+        pass
+
+    

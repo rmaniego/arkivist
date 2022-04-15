@@ -1,12 +1,13 @@
 from arkivist import Arkivist
 
-dataset = Arkivist("db/perplexedfruitbat.weatherman.weather.json")
-print("Test:", dataset)
+print("\nTest #1 _initialization")
+dataset = Arkivist("temp/01-initialization.json")
+print("Empty JSON file:", dataset)
 
 
 ## Example #2 / autosave = True (default)
-print("\nTest #2")
-people = Arkivist("tests.json") #, encoder="utf-8")
+print("\nTest #2 Sorting")
+people = Arkivist("temp/02-sorting.json")
 
 person = {}
 person.update({"name": "Ñino"})
@@ -20,110 +21,98 @@ print("Show all items (sorted): ", people.show(sort=True))
 print("Show all items (reverse): ", people.show(sort=True, reverse=True))
 
 
-
 ## Example #3 / autosave = False
-print("\nTest #3")
-people = Arkivist("tests.json", autosave=False)
-
+print("\nTest #3 Manual Saving")
+people = Arkivist("temp/03-manual-save.json", autosave=False)
 person = {}
 person.update({"name": "Maria"})
 people.update({"maria": person})
-people.save() # manual saving
-people.save(filepath="test.backup.json") # save to another file
+people.save()
+people.save(save_as="temp/03-save-as.json")
 
 ## Example #4
-print("\nTest #4")
-people = Arkivist("tests.json")
-
-# print the number of entries
+print("\nTest #4 Counter")
+people = Arkivist("temp/04-counter.json")
+people.set("juan", "Juan dela Cruz")
+people.set("pedro", "Pedro delos Santos")
+people.set("maria", "Maria Sta. Maria")
 print("Count: ", people.count())
 
 ## Example #5
-print("\nTest #5")
-people = Arkivist("tests.json")
-
+print("\nTest #5 Access Keys and Values")
+people = Arkivist("temp/05-keys-values.json")
+people.set("juan", "Juan dela Cruz")
+people.set("pedro", "Pedro delos Santos")
+people.set("maria", "Maria Sta. Maria")
 # get the keys and values
 print("Keys: ", list(people.keys()))
 print("Values: ", list(people.values()))
 
 ## Example #6
-print("\nTest #6")
-simple = Arkivist("test.simple.json")
-
-simple.reset()
+print("\nTest #6 _invert Hashable key-value pairs")
+simple = Arkivist("temp/06-invert.json")
 simple.update({0: "a"})
 simple.update({1: "b"})
 simple.update({2: "c"})
-
-# inverts the dictionary
 print("Normal: ", simple.show())
 simple.invert()
-print("Invert: ", simple.show())
+print("_invert: ", simple.show())
 
 ## Example #7
-print("\nTest #7")
-people = Arkivist("tests.json")
-
-# print original contents
+print("\nTest #7 Load (replace) and Clear old data")
+people = Arkivist("temp/07-load-clear.json")
+people.set("juan", "Juan dela Cruz")
+people.set("pedro", "Pedro delos Santos")
+people.set("maria", "Maria Sta. Maria")
 print("Old: ", people.show())
-
-# print new contents
 alien = {"anon": {"name": "Anon"}}
 people.load(alien)
 print("New: ", people.show())
-
-# print empty dictionary
 people.reset()
-print("Clear: ", people.show())
+print("Cleared: ", people.show())
 
 ## Example #8
-print("\nTest #8")
-people = Arkivist("tests.json")
-
+print("\nTest #8 Load from valid JSON string and Python dictionary.")
+people = Arkivist("temp/08-load-valid.json")
 # valid dictionary
 people.load({"ufo": {"name": "UFO"}})
-print("Valid Input: ", people.show())
-
+print("Valid Dictionary: ", people.show())
 # valid string
 people.load('{"dog": {"name": "Doggy"}}')
-print("Valid Input: ", people.show())
-
+print("Valid String: ", people.show())
 # flush invalid input
 people.load(1234)
-print("Invalid Input: ", people.show())
+print("_invalid _input: ", people.show())
 
 ## Example #9
-print("\nTest #9")
-people = Arkivist("tests.json")
-
-# flattens nested dictionary
-people.update({"dog": {"name": "Doggy"}})
-people.update({"ufo": {"name": "UFO"}})
-print("Flatten: ", people.flatten())
+print("\nTest #9 Flattener")
+pets = Arkivist("temp/09-flattener.json")
+pets.set("dog", {"breeds": ["Akita", "Golden Retriever"]})
+pets.set("cat", {"patterns": ["Calico", "Tabby", "Tortoise Shell"]})
+pets.set("ufo", {"outer-space": {"proxima centauri": [1, 2, 3]}})
+print("Flatten: ", pets.flatten())
 
 ## Example #10
-print("\nTest #10")
-## do not save to file
-todo = Arkivist()
-
-# fetch from web api - invalid
+print("\nTest #10 Fetch from JSON API")
+todo = Arkivist("temp/10-fetch.json")
 todo.fetch("https://www.google.com")
-# fetch from web api - valid
 todo.fetch("https://jsonplaceholder.typicode.com/todos/1")
 print("Show: ", todo.show())
 
 
 ## Example #11
-print("\nTest #11")
+print("\nTest #11 Check if Empty")
 # Check if empty
-people = Arkivist("tests.json").reset()
+people = Arkivist("temp/11-is-empty.json")
+people.set("juan", "Juan dela Cruz")
+people.set("pedro", "Pedro delos Santos")
+people.set("maria", "Maria Sta. Maria")
 print("Count:", people.count(), "; Is empty: ", people.is_empty())
 
 
 ## Example #12
-print("\nTest #12")
-people = Arkivist("tests.json").reset()
-
+print("\nTest #12 Use native update function")
+people = Arkivist("temp/12-update.json").reset()
 people.update({"abc": {"name": "Abc"}})
 people.update({"dog": {"name": "Doggy"}})
 people.update({"juan": {"name": "Juan"}})
@@ -132,101 +121,132 @@ people.update({"xyz": {"name": "xyz"}})
 
 ## Example #13
 print("\nTest #13")
-people = Arkivist("tests.json").reset()
+people = Arkivist("temp/13-queries.json").reset()
+people.set("abc", {"name": "Abc"})
+people.set("dog1", {"name": "Doggy"})
+people.set("dog2", {"name": "doggy"})
+people.set("juan", {"name": "Juan"})
+people.set("ufo", {"name": "UFO"})
+people.set("xyz", {"name": "xyz"})
 
-people.update({"abc": {"name": "Abc"}})
-people.update({"dog": {"name": "Doggy"}})
-people.update({"juan": {"name": "Juan"}})
-people.update({"ufo": {"name": "UFO"}})
-people.update({"xyz": {"name": "xyz"}})
 
 matches = people.where("name", "Doggy").show()
-print("\nShow all items where name is exactly 'Doggy':\n", matches)
+print("\nShow all items where name is exactly 'Doggy':\n ", matches)
 
-print("\nLoop over all items where name is exactly 'D/doggy':")
+print("\nLoop over all items where name is 'doggy' or 'Doggy':")
 for key, value in people.where("name", "doggy", sensitivity=False).query():
-    print(" ", key, value)
+    print(" - ", key, value)
 
 matches = people.where("name", "a", exact=False).show()
-print("\nShow all items where name contains 'a':\n", matches)
+print("\nShow all items where name contains 'a':\n ", matches)
 
 matches = people.where("name", "a", exact=False, sensitivity=False).show()
-print("\nShow all items where name contains 'A/a':\n", matches)
+print("\nShow all items where name contains 'A/a':\n ", matches)
 
 print("\nLoop over all items where name contains 'A/a'")
 for key, value in people.where("name", "a", exact=False, sensitivity=False).query():
-    print(" ", key, value)
+    print(" - ", key, value)
 
 matches = people.where("name").exclude("a", exact=False).show()
-print("\nShow excluding names containing 'a':\n", matches)
+print("\nShow all items excluding names those containing 'a':\n ", matches)
 
 matches = people.where("name").exclude("a", exact=False, sensitivity=False).show()
-print("\nShow excluding names containing 'A/a':\n", matches)
+print("\nShow all items excluding names those containing 'A/a':\n ", matches)
 
 print("\nLoop over matches excluding names containing 'A/a':")
 for key, value in people.where("name").exclude("a", exact=False, sensitivity=False).query():
-    print(" ", key, value)
+    print(" - ", key, value)
 
 ## Example #14
-print("\nTest #14")
-people1 = Arkivist("people.json").reset()
-people2 = Arkivist("people.json").reset()
+print("\nTest #14 Manual Save and Reload")
+people = Arkivist("temp/14-reload.json", autosave=True).reset()
 
-people1.update({"abc": {"name": "Abc"}})
-people1.update({"dog": {"name": "Doggy"}})
-people1.update({"juan": {"name": "Juan"}})
-people1.update({"ufo": {"name": "UFO"}})
-people1.update({"xyz": {"name": "xyz"}})
+people.update({"abc": {"name": "Abc"}})
+people.update({"dog": {"name": "Doggy"}})
+people.save()
 
-print("People1:", people1.show())
-print("People2:", people2.show())
-people2.reload()
-print("People2", people2.show())
+people.update({"juan": {"name": "Juan"}})
+people.update({"ufo": {"name": "UFO"}})
+people.update({"xyz": {"name": "xyz"}})
+print("People:")
+for key, value in people.items():
+    print(" - ", key, value)
 
-## Example #16
-print("\nTest #16")
-hello = Arkivist("hello.json")
+people.reload()
+print("\nPeople:")
+for key, value in people.items():
+    print(" - ", key, value)
+
+## Example #15
+print("\nTest #15 Display as String")
+hello = Arkivist("temp/15-string.json", indent=2)
+hello.set("message", "Hello, world!")
 print("Dictionary:", hello.show())
 print("String:", hello.string())
 
-## Example #17
-print("\nTest #17")
-people = Arkivist("people.json").reset()
-people.update({"abc": {"name": "Abc"}})
-people.update({"dog": {"name": "Doggy"}})
-people.update({"juan": {"name": "Juan"}})
+## Example #16
+print("\nTest #16 Get random item")
+names = Arkivist("temp/16-random.json").reset()
+names.update({"abc": {"name": "Abc"}})
+names.update({"dog": {"name": "Doggy"}})
+names.update({"juan": {"name": "Juan"}})
+names.update({"xyz": {"name": "Xyz"}})
 print("Random item:", people.random())
 
-## Example #18
-print("\nTest #18")
-test = Arkivist("tests.json").reset()
+## Example #17
+print("\nTest #17 Doublecheck expected value")
+test = Arkivist("temp/17-doublecheck.json").reset()
 test.set("number", 100)
-print("Doublecheck (100):", test.doublecheck("number", 100))
-print("Doublecheck (101):", test.doublecheck("number", 101))
+print(" - Doublecheck (100):", test.doublecheck("number", 100))
+print(" - Doublecheck (101):", test.doublecheck("number", 101))
 
-## Example #19
-print("\nTest #19")
-test = Arkivist("tests.json").reset()
+## Example #18
+print("\nTest #18 Find parent, set/get child")
+test = Arkivist("temp/18-find-in.json").reset()
 test.set("names", {})
-test.find("names").set("maria", 1)
-test.find("names").set("pedro", 1)
-print("Names:", test.find("names").get("juan", 0))
+test.find("names").set("juan", 14)
+test.find("names").set("maria", 15)
+test.find("names").set("pedro", 16)
+print("Juan:", test.find("names").get("juan"))
 
 ## Example #19
-print("\nTest #20")
-test = Arkivist("tests.json").reset()
+print("\nTest #19 Append in (lists child)")
+test = Arkivist("temp/19-append-in.json").reset()
 
-test.appendIn("colors", "red")
-test.appendIn("colors", "orange")
-test.appendIn("colors", "yellow")
-test.appendIn("colors", ("blue", "green"), unique=True, sort=True)
-test.removeIn("colors", "yellow")
-test.removeIn("colors", ("blue", "purple"))
+test.append_in("colors", "red")
+test.append_in("colors", "orange")
+test.append_in("colors", "yellow")
+test.append_in("colors", ("blue", "green"), unique=True, sort=True)
+test.remove_in("colors", "yellow")
+test.remove_in("colors", ("blue", "purple"))
 
 test.set("numbers", {})
-test.find("numbers").appendIn("odd", 1)
-test.find("numbers").appendIn("odd", (1, 3, 5, [7]))
-print("Lists:", test.show())
+test.find("numbers").append_in("odd", 1)
+test.find("numbers").append_in("odd", (1, 3, 5, [7]))
+print(" - Lists:", test.show())
 
 
+## Example #20
+print("\nTest #20 Encryption (Fernet)")
+authfile = "temp/20-arkivist-auth.txt"
+weather = Arkivist("temp/20-weather.json", authfile=authfile)
+weather.set("weather", {})
+weather.find("weather").set("2022-04-14", "Cloudy")
+weather.find("weather").set("2022-04-15", "Sunny")
+weather.encrypt()
+weather.save("temp/20-weather-encrypted.json")
+weather.encrypt(False)
+weather.find("weather").set("2022-04-16", "Hazy")
+weather.save()
+
+authfile = "20-secret-key.txt"
+weather = Arkivist("temp/20-encrypted.json", authfile=authfile)
+weather.encrypt()
+weather.set("weather", {})
+weather.find("weather").set("2022-04-14", "Cloudy")
+weather.find("weather").set("2022-04-15", "Sunny")
+weather.find("weather").set("2022-04-16", "Hazy")
+print("Weather:")
+for key, value in weather["weather"].items():
+    print(" - ", key, value)
 

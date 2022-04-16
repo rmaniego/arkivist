@@ -5,7 +5,6 @@
 
 import json
 import time
-import getpass
 import requests
 import threading
 from random import randint
@@ -44,14 +43,14 @@ class Arkivist(dict):
             self._authfile = authfile
 
         if self._filepath is not None:
-            self._encrypted, _ = _read_json(self._filepath)
+            self._encrypted, temp = _read_json(self._filepath)
             if self._encrypted:
                 self._cypher = _load_cypher(self._authfile)
                 if not len(self):
                     _, temp = _read_json(self._filepath, self._cypher)
-                    if len(temp):
-                        self.clear()
-                        self.update(temp)
+            if len(temp):
+                self.clear()
+                self.update(temp)
         
         self._indent = indent
         self._reverse = reverse
@@ -436,19 +435,21 @@ def _read_json(filepath, cypher=None):
     try:
         with open(filepath, "r", encoding="utf-8") as f:
             keys = ("arkivist", "encryption", "content")
-            content = json.loads(f.read())
-            if isinstance(content, dict) and isinstance(keys, (list, set, tuple)):
-                if len(content) == len(keys):
-                    encrypted = not (False in [(key in content) for key in keys])
-                    if encrypted and cypher is not None:
-                        if content["arkivist"] >= 1.2 and content["encryption"] == "fernet":
-                            content = content["content"].encode("utf-8")
-                            content = json.loads(cypher.decrypt(content).decode())
-                    else:
-                        content = {}
-                    
+            temp = f.read().replace("\r", "").replace("\n", "").strip()
+            if temp[0] == "{":
+                content = json.loads(temp)
+                if isinstance(content, dict):
+                    if isinstance(keys, (list, set, tuple)):
+                        if len(content) == len(keys):
+                            encrypted = not (False in [(key in content) for key in keys])
+                            if encrypted and cypher is not None:
+                                if content["arkivist"] >= 1.2 and content["encryption"] == "fernet":
+                                    content = content["content"].encode("utf-8")
+                                    content = json.loads(cypher.decrypt(content).decode())
+            else:
+                print("ArkivistWarning: The supplied file is not compatible with Arkivist.")
     except:
-        pass
+        print("ArkivistWarning: Failed to parse the supplied file.")
     return encrypted, content
 
 def _write_json(data):

@@ -4,7 +4,6 @@ print("\nTest #1 _initialization")
 dataset = Arkivist("temp/01-initialization.json")
 print("Empty JSON file:", dataset)
 
-
 ## Example #2 / autosave = True (default)
 print("\nTest #2 Sorting")
 people = Arkivist("temp/02-sorting.json")
@@ -19,7 +18,6 @@ people.set("girl", {"name": "Girl"})
 print("Show all items (unsorted): ", people.show())
 print("Show all items (sorted): ", people.show(sort=True))
 print("Show all items (reverse): ", people.show(sort=True, reverse=True))
-
 
 ## Example #3 / autosave = False
 print("\nTest #3 Manual Saving")
@@ -99,7 +97,6 @@ todo.fetch("https://www.google.com")
 todo.fetch("https://jsonplaceholder.typicode.com/todos/1")
 print("Show: ", todo.show())
 
-
 ## Example #11
 print("\nTest #11 Check if Empty")
 # Check if empty
@@ -108,7 +105,6 @@ people.set("juan", "Juan dela Cruz")
 people.set("pedro", "Pedro delos Santos")
 people.set("maria", "Maria Sta. Maria")
 print("Count:", people.count(), "; Is empty: ", people.is_empty())
-
 
 ## Example #12
 print("\nTest #12 Use native update function")
@@ -128,7 +124,6 @@ people.set("dog2", {"name": "doggy"})
 people.set("juan", {"name": "Juan"})
 people.set("ufo", {"name": "UFO"})
 people.set("xyz", {"name": "xyz"})
-
 
 matches = people.where("name", "Doggy").show()
 print("\nShow all items where name is exactly 'Doggy':\n ", matches)
@@ -225,11 +220,9 @@ test.find("numbers").append_in("odd", 1)
 test.find("numbers").append_in("odd", (1, 3, 5, [7]))
 print(" - Lists:", test.show())
 
-
 ## Example #20
 print("\nTest #20 Encryption (Fernet)")
-authfile = "temp/20-arkivist-auth.txt"
-weather = Arkivist("temp/20-weather.json", authfile=authfile)
+weather = Arkivist("temp/20-weather.json", authfile="temp/2a-arkivist-auth.txt")
 weather.set("weather", {})
 weather.find("weather").set("2022-04-14", "Cloudy")
 weather.find("weather").set("2022-04-15", "Sunny")
@@ -239,8 +232,7 @@ weather.encrypt(False)
 weather.find("weather").set("2022-04-16", "Hazy")
 weather.save()
 
-authfile = "20-secret-key.txt"
-weather = Arkivist("temp/20-encrypted.json", authfile=authfile)
+weather = Arkivist("temp/20-encrypted.json", authfile="temp/20b-secret-key.txt")
 weather.encrypt()
 weather.set("weather", {})
 weather.find("weather").set("2022-04-14", "Cloudy")
@@ -249,4 +241,13 @@ weather.find("weather").set("2022-04-16", "Hazy")
 print("Weather:")
 for key, value in weather["weather"].items():
     print(" - ", key, value)
+
+## Example #21
+print("\nTest #21a Check unexpected clearing of JSON file")
+test = Arkivist("temp/21-mackaroo1.json")
+print(" - Show:", test.show())
+
+print("\nTest #21b Check unexpected clearing of JSON file (encrypted)")
+test = Arkivist("temp/21-mackaroo2.json", authfile="temp/21-mackaroo2-auth.txt")
+print(" - Show:", test.show())
 

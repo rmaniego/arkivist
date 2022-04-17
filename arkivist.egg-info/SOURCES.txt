@@ -8,7 +8,6 @@ tests.py
 __pycache__/test.cpython-38.pyc
 arkivist/__init__.py
 arkivist/arkivist.py
-arkivist/version.py
 arkivist.egg-info/PKG-INFO
 arkivist.egg-info/SOURCES.txt
 arkivist.egg-info/dependency_links.txt

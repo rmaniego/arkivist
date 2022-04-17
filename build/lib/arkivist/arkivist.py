@@ -94,6 +94,7 @@ class Arkivist(dict):
             if self._parent is not None:
                 if self._parent in self:
                     self[self._parent][key] = value
+                self._parent = None
             else:
                 self[key] = value
             if self._autosave:
@@ -127,6 +128,7 @@ class Arkivist(dict):
                     if isinstance((temp:=self[self._parent]), dict):
                         if key in temp:
                             return temp[key]
+                self._parent = None
             else:
                 if key in self:
                     if self[key] is not None:

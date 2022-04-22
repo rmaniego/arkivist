@@ -1,10 +1,10 @@
 Metadata-Version: 2.1
 Name: arkivist
-Version: 1.2.3
+Version: 1.2.4
 Summary: Arkivist, a Python Dictionary wrapper for JSON files.
 Home-page: https://github.com/rmaniego/arkivist
 Author: Rodney Maniego Jr.
-Author-email: rod.maniego23@gmail.com
+Author-email: rodney.maniegojr@gmail.com
 License: MIT
 Download-URL: https://github.com/rmaniego/arkivist/archive/v1.0.tar.gz
 Keywords: Dictionary,JSON,File,Storage
@@ -14,7 +14,7 @@ Classifier: Intended Audience :: Developers
 Classifier: Topic :: Software Development :: Build Tools
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Programming Language :: Python :: 3
-Requires-Python: >=3.6
+Requires-Python: >=3.9
 Description-Content-Type: text/markdown
 License-File: LICENSE
 

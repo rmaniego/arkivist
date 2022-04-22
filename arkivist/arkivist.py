@@ -81,6 +81,7 @@ class Arkivist(dict):
         elif (self._encrypted and self._cypher is not None) and not state:
             self._encrypted = False
             self._cypher = None
+        self.save()
 
     def find(self, parent):
         with self._lock:

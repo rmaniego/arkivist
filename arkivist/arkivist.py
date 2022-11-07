@@ -30,8 +30,12 @@ class Arkivist(dict):
     ):
 
         self._indent = int(indent)
-        self._reverse = reverse
-        self._autosort = autosort
+        self._reverse = isinstance(reverse, bool) and bool(reverse)
+        self._autosort = isinstance(autosort, bool) and bool(autosort)
+        self._autosave = isinstance(autosave, bool) and bool(autosave)
+        self._cypher = None
+        self._encrypt = False
+        self._authfile = None
         self._lock = threading.RLock()
         
         self._read_mode = "r+"
@@ -49,12 +53,6 @@ class Arkivist(dict):
         elif isinstance(data, str) and (filepath is None):
             self._filepath = data
 
-        self._autosave = isinstance(autosave, bool) and bool(autosave)
-
-        # encryption
-        self._cypher = None
-        self._encrypt = False
-        self._authfile = None
         if isinstance(authfile, str):
             self._authfile = authfile
             self._cypher = _load_cypher(self._authfile)
@@ -67,8 +65,6 @@ class Arkivist(dict):
 
         # searching properties
         self._parent = None
-
-        # querying properties
         self._query_complete = False
         self._operation = None
         self._child = None

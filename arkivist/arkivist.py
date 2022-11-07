@@ -72,6 +72,11 @@ class Arkivist(dict):
         self._exact = True
         self._sensitivity = False
         self._matches = None
+    
+    def clear(self):
+        with self._lock:
+            for key in list(self.keys()):
+                self.pop(key, None)
 
     def encrypt(self, state=True):
         """Set Encrypt/Decrypt configuration for JSON file"""
@@ -112,7 +117,7 @@ class Arkivist(dict):
 
     def fetch(self, url, extend=False, noerror=True):
         with self._lock:
-            if extend:
+            if not extend:
                 self.clear()
             try:
                 with requests.get(url) as source:

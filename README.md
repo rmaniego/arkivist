@@ -25,12 +25,13 @@ This is compatible with Python 3.9+ and is already used in various personal proj
 from arkivist import Arkivist
 ```
 
-**2. Cast Python Dictionary to Arkivist object**
+**2. Cast Python Dictionary to Arkivist object** 
+Create a new file if not yet existing.
 ```python
 message = Arkivist({"hello": "world"})
 
 data = {"a": "Ant", "b": "Bug", "c": "Cat"}
-animals = Arkivist(data, filepath="animals.json")
+animals = Arkivist(data, filepath="animals.json", mode="w+")
 ```
 
 **3. Instantiate data from existing JSON file**
@@ -70,9 +71,10 @@ people.update({"juan": {"name": "Juan Dela Cruz"}})
 people.update({"maria": {"name": "Maria Dela Cruz"}})
 ```
 
-**8. Get dictionary object**
+**8. Get dictionary object** 
+Set to read mode only, show an error if file does not exists.
 ```python
-places = Arkivist("data/places.json")
+places = Arkivist("data/places.json", mode="r")
 print(places.show())
 ```
 

@@ -20,6 +20,7 @@ class Arkivist(dict):
         self,
         data=None,
         filepath=None,
+        mode="r+",
         indent=0,
         autosave=True,
         autosort=False,
@@ -32,6 +33,11 @@ class Arkivist(dict):
         self._reverse = reverse
         self._autosort = autosort
         self._lock = threading.RLock()
+        
+        self._read_mode = "r+"
+        if mode not in ("r", "r+", "w+"):
+            ArkivistException("Unsupported file read mode, use `r`, `r+`, `w+`.")
+        self._read_mode = mode
 
         self._save_as = None
         self._filepath = None
@@ -54,7 +60,7 @@ class Arkivist(dict):
             self._cypher = _load_cypher(self._authfile)
 
         if not self._is_data and self._filepath:
-            self._encrypt, temp = _read_json(self._filepath, self._cypher)
+            self._encrypt, temp = _read_json(self._filepath, self._read_mode, self._cypher)
             self.clear()
             self.update(temp)
             self.save()
@@ -265,7 +271,7 @@ class Arkivist(dict):
 
     def reload(self):
         with self._lock:
-            _, temp = _read_json(self._filepath, self._cypher)
+            _, temp = _read_json(self._filepath, self._read_mode, self._cypher)
             if len(temp):
                 self.clear()
                 self.update(temp)
@@ -477,12 +483,12 @@ def _validate_filepath(filepath, extension="json"):
     ArkivistException("Unsupported file.")
 
 
-def _read_json(filepath, cypher=None):
+def _read_json(filepath, mode, cypher=None):
     """ Read and parse JSON file to Python dictionary. """
     encrypted, content = False, {}
     filepath = _validate_filepath(filepath)
     keys = ("arkivist", "encryption", "content")
-    with open(filepath, "r+", encoding="utf-8") as f:
+    with open(filepath, mode, encoding="utf-8") as f:
         temp = RE_WHITESPACES.sub("", f.read()).strip()
         if temp[:2] in ("", "{}"):
             return encrypted, content

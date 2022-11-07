@@ -1,5 +1,10 @@
 from arkivist import Arkivist
 
+print("\nTest #0 New file")
+dataset = Arkivist("temp/00-new.json", mode="w+")
+print("Empty JSON file:", dataset)
+
+
 print("\nTest #0 Valid file")
 dataset = Arkivist("temp/00-valid1.json")
 

@@ -1,4 +1,4 @@
-![](/resources/banner.png)
+![](/media/banner.png)
 
 # arkivist
 Arkivist is Python Dictionary wrapper for JSON files.
@@ -10,7 +10,7 @@ Other behaviors are similar to native Python dictionaries, the tutorial below on
 
 `pip install arkivist --upgrade`
 
-Current version is 1.2.0, but more updates are coming soon. Installing it will also install required packages including *requests*.
+Current version is 1.2.\*, but more updates are coming soon. Installing it will also install required packages including *requests*.
 
 This is compatible with Python 3.9+ and is already used in various personal projects.
 

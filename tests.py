@@ -129,7 +129,7 @@ print("Flatten: ", pets.flatten())
 print("\nTest #10 Fetch from JSON API")
 todo = Arkivist("temp/10-fetch.json")
 todo.fetch("https://www.google.com")
-todo.fetch("https://jsonplaceholder.typicode.com/todos/1")
+todo.fetch("https://jsonplaceholder.typicode.com/todos/1", noerror=False)
 print("Show: ", todo.show())
 
 ## Example #11

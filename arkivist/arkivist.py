@@ -101,28 +101,26 @@ class Arkivist(dict):
                 self._parent = None
             else:
                 self[key] = value
-            if self._autosave:
-                _write_json(self)
+            _write_json(self)
             return self
 
     def __setitem__(self, key, value):
         with self._lock:
             dict.__setitem__(self, key, value)
-            if self._autosave:
-                _write_json(self)
+            _write_json(self)
             return self
 
-    def fetch(self, url, extend=False):
+    def fetch(self, url, extend=False, noerror=True):
         with self._lock:
             if extend:
                 self.clear()
             try:
                 with requests.get(url) as source:
                     self.update(source.json())
-                if self._autosave:
-                    _write_json(self)
-            except:
-                pass
+            except Exception as e:
+                if not noerror:
+                    ArkivistException(str(e))
+            _write_json(self)
             return self
 
     def get(self, key, default=None):
@@ -189,8 +187,7 @@ class Arkivist(dict):
                             self[key] = list(set(self[key]))
                     except:
                         pass
-            if self._autosave:
-                _write_json(self)
+            _write_json(self)
             return self
 
     def remove_in(self, key, value):
@@ -208,8 +205,7 @@ class Arkivist(dict):
                 if key in self:
                     if isinstance(self[key], list):
                         self[key] = list(set(self[key]) - set(value))
-            if self._autosave:
-                _write_json(self)
+            _write_json(self)
             return self
 
     def random(self):
@@ -240,15 +236,10 @@ class Arkivist(dict):
 
     def invert(self):
         with self._lock:
-            try:
-                # hashable keys / values
-                temp = dict(self)
-                self.clear()
-                self.update(dict(zip(temp.values(), temp.keys())))
-                if self._autosave:
-                    _write_json(self)
-            except:
-                pass
+            temp = dict(self)
+            self.clear()
+            self.update(dict(zip(temp.values(), temp.keys())))
+            _write_json(self)
             return self
 
     def load(self, data):
@@ -261,8 +252,7 @@ class Arkivist(dict):
                     self.update(json.loads(data))
                 except:
                     pass
-            if self._autosave:
-                _write_json(self)
+            _write_json(self)
             return self
 
     def reload(self):
@@ -276,8 +266,7 @@ class Arkivist(dict):
     def reset(self):
         with self._lock:
             self.clear()
-            if self._autosave:
-                _write_json(self)
+            _write_json(self)
             return self
 
     # quering methods
@@ -503,6 +492,8 @@ def _read_json(filepath, mode, cypher=None):
 
 def _write_json(dataset):
     """Write JSON object as string representation into file."""
+    if not dataset._autosave:
+        return
 
     if dataset._save_as is not None:
         dataset._filepath = dataset._save_as

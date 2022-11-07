@@ -30,9 +30,9 @@ class Arkivist(dict):
     ):
 
         self._indent = int(indent)
-        self._reverse = isinstance(reverse, bool) and bool(reverse)
-        self._autosort = isinstance(autosort, bool) and bool(autosort)
-        self._autosave = isinstance(autosave, bool) and bool(autosave)
+        self._reverse = reverse
+        self._autosort = autosort
+        self._autosave = autosave
         self._cypher = None
         self._encrypt = False
         self._authfile = None
@@ -58,9 +58,9 @@ class Arkivist(dict):
             self._cypher = _load_cypher(self._authfile)
 
         if not self._is_data and self._filepath:
-            self._encrypt, temp = _read_json(self._filepath, self._read_mode, self._cypher)
+            self._encrypt, data = _read_json(self._filepath, self._read_mode, self._cypher)
             self.clear()
-            self.update(temp)
+            self.update(data)
             self.save()
 
         # searching properties
@@ -72,11 +72,6 @@ class Arkivist(dict):
         self._exact = True
         self._sensitivity = False
         self._matches = None
-    
-    def clear(self):
-        with self._lock:
-            for key in list(self.keys()):
-                self.pop(key, None)
 
     def encrypt(self, state=True):
         """Set Encrypt/Decrypt configuration for JSON file"""
@@ -262,7 +257,7 @@ class Arkivist(dict):
 
     def reload(self):
         with self._lock:
-            _, temp = _read_json(self._filepath, self._read_mode, self._cypher)
+            self._encrypt, temp = _read_json(self._filepath, self._read_mode, self._cypher)
             if len(temp):
                 self.clear()
                 self.update(temp)
@@ -399,9 +394,8 @@ class Arkivist(dict):
 
     def save(self, save_as=None):
         with self._lock:
-            if isinstance(save_as, str):
-                self._save_as = save_as
-            _write_json(self)
+            self._save_as = save_as
+            _write_json(self, forced=True)
             self._save_as = None
 
 
@@ -494,34 +488,34 @@ def _read_json(filepath, mode, cypher=None):
                 content = json.loads(cypher.decrypt(content).decode())
     return encrypted, content
 
-
-def _write_json(dataset):
+def _write_json(obj, forced=False):
     """Write JSON object as string representation into file."""
-    if not dataset._autosave:
+    if not any([forced, obj._autosave]):
         return
 
-    if dataset._save_as is not None:
-        dataset._filepath = dataset._save_as
-    filepath = _validate_filepath(dataset._filepath)
+    if obj._save_as is not None:
+        obj._filepath = obj._save_as
+    filepath = _validate_filepath(obj._filepath)
 
-    autosort = isinstance(dataset._autosort, bool) and bool(dataset._autosort)
+    dataset = dict(obj)
+    autosort = isinstance(obj._autosort, bool) and bool(obj._autosort)
     if autosort:
-        reverse = isinstance(dataset._reverse, bool) and bool(dataset._reverse)
-        dataset = dict(sorted(dataset.items(), reverse=reverse))
+        reverse = isinstance(obj._reverse, bool) and bool(obj._reverse)
+        dataset = dict(sorted(obj.items(), reverse=reverse))
 
     # string representation of the JSON object
     content = ""
-    encrypt = isinstance(dataset._encrypt, bool) and bool(dataset._encrypt)
+    encrypt = isinstance(obj._encrypt, bool) and bool(obj._encrypt)
     if encrypt:
         encrypted = {}
         encrypted["arkivist"] = 1.3
         encrypted["encryption"] = "fernet"
-        encrypted["content"] = dataset._cypher.encrypt(
+        encrypted["content"] = obj._cypher.encrypt(
             content.encode("utf-8")
         ).decode()
         content = json.dumps(encrypted, ensure_ascii=False)
     else:
-        indent = dataset._indent if dataset._indent in (0, 1, 2, 3, 4) else 4
+        indent = obj._indent if obj._indent in (0, 1, 2, 3, 4) else 4
         content = json.dumps(dataset, indent=indent, ensure_ascii=False)
     with open(filepath, "w+", encoding="utf-8") as f:
         f.write(content)

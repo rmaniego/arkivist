@@ -488,7 +488,7 @@ def _read_json(filepath, mode, cypher=None):
             if not (
                 content["arkivist"] >= 1.2 and content["encryption"] == "fernet"
             ):
-            ArkivistException("The file is not compatible with Arkivist.")
+                ArkivistException("The file is not compatible with Arkivist.")
             content = content["content"].encode("utf-8")
             content = json.loads(cypher.decrypt(content).decode())
     return encrypted, content

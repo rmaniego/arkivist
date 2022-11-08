@@ -59,7 +59,6 @@ class Arkivist(dict):
 
         if not self._is_data and self._filepath:
             self._encrypt, data = _read_json(self._filepath, self._read_mode, self._cypher)
-            self.clear()
             self.update(data)
             self.save()
 
@@ -470,7 +469,7 @@ def _validate_filepath(filepath, extension="json"):
 def _read_json(filepath, mode, cypher=None):
     """ Read and parse JSON file to Python dictionary. """
     temp = ""
-    encrypted, content = False, {}
+    encrypt, content = False, {}
     filepath = _validate_filepath(filepath)
     keys = ("arkivist", "encryption", "content")
     try:
@@ -482,18 +481,20 @@ def _read_json(filepath, mode, cypher=None):
         with open(filepath, "w", encoding="utf-8") as f:
             f.write("{}")
     if temp[:2] in ("", "{}"):
-        return encrypted, content
+        return encrypt, content
     content = json.loads(temp)
     if len(content) == len(keys):
-        encrypted = all([(key in content) for key in keys])
-        if encrypted and isinstance(cypher, str):
+        encrypt = all([(key in content) for key in keys])
+        if encrypt and cypher is not None:
             if not (
                 content["arkivist"] >= 1.2 and content["encryption"] == "fernet"
             ):
                 ArkivistException("The file is not compatible with Arkivist.")
-            content = content["content"].encode("utf-8")
-            content = json.loads(cypher.decrypt(content).decode())
-    return encrypted, content
+            encrypted = content["content"].encode("utf-8")
+            decrypted = cypher.decrypt(encrypted).decode().strip()
+            decrypted = decrypted if decrypted else "{}"
+            content = json.loads(decrypted)
+    return encrypt, content
 
 def _write_json(obj, forced=False):
     """Write JSON object as string representation into file."""

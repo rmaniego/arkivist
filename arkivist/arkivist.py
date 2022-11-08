@@ -476,6 +476,8 @@ def _read_json(filepath, mode, cypher=None):
     try:
         with open(filepath, mode, encoding="utf-8") as f:
             temp = RE_WHITESPACES.sub("", f.read()).strip()
+            if mode == "w+":
+                f.write(temp)
     except:
         with open(filepath, "w", encoding="utf-8") as f:
             f.write("{}")

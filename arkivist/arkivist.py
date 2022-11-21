@@ -40,7 +40,7 @@ class Arkivist(dict):
         
         self._read_mode = "r+"
         if mode not in ("r", "r+", "w+"):
-            ArkivistException("Unsupported file read mode, use `r`, `r+`, `w+`.")
+            raise ArkivistException("Unsupported file read mode, use `r`, `r+`, `w+`.")
         self._read_mode = mode
 
         self._save_as = None
@@ -118,7 +118,7 @@ class Arkivist(dict):
                     self.update(source.json())
             except Exception as e:
                 if not noerror:
-                    ArkivistException(str(e))
+                    raise ArkivistException(str(e))
             _write_json(self)
             return self
 
@@ -461,9 +461,11 @@ def _load_cypher(authfile):
 
 
 def _validate_filepath(filepath, extension="json"):
-    if filepath.split(".")[-1].lower() == extension:
-        return filepath
-    ArkivistException("Unsupported file.")
+    if isinstance(filepath, str:)
+        if filepath.split(".")[-1].lower() == extension:
+            return filepath
+        raise ArkivistException("Unsupported file.")
+    return None
 
 
 def _read_json(filepath, mode, cypher=None):
@@ -471,6 +473,9 @@ def _read_json(filepath, mode, cypher=None):
     temp = ""
     encrypt, content = False, {}
     filepath = _validate_filepath(filepath)
+    if not isinstance(filepath, str):
+        return encrypt, content
+
     keys = ("arkivist", "encryption", "content")
     try:
         with open(filepath, mode, encoding="utf-8") as f:
@@ -489,7 +494,7 @@ def _read_json(filepath, mode, cypher=None):
             if not (
                 content["arkivist"] >= 1.2 and content["encryption"] == "fernet"
             ):
-                ArkivistException("The file is not compatible with Arkivist.")
+                raise ArkivistException("The file is not compatible with Arkivist.")
             encrypted = content["content"].encode("utf-8")
             decrypted = cypher.decrypt(encrypted).decode().strip()
             decrypted = decrypted if decrypted else "{}"
@@ -504,6 +509,8 @@ def _write_json(obj, forced=False):
     if obj._save_as is not None:
         obj._filepath = obj._save_as
     filepath = _validate_filepath(obj._filepath)
+    if not isinstance(filepath, str):
+        return
 
     dataset = dict(obj)
     autosort = isinstance(obj._autosort, bool) and bool(obj._autosort)

@@ -461,7 +461,7 @@ def _load_cypher(authfile):
 
 
 def _validate_filepath(filepath, extension="json"):
-    if isinstance(filepath, str:)
+    if isinstance(filepath, str):
         if filepath.split(".")[-1].lower() == extension:
             return filepath
         raise ArkivistException("Unsupported file.")

@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "arkivist"
+version = "1.4.0"
+description = "A lightweight, thread-safe Python dictionary wrapper for JSON files."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Rodney Maniego Jr." }]
+keywords = ["json", "dictionary", "storage", "lightweight", "database"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+# `requests` and `cryptography` are imported lazily; they are kept as
+# dependencies for backward compatibility with existing installations,
+# but the core library works without them.
+dependencies = ["requests", "cryptography"]
+
+[project.urls]
+Homepage = "https://github.com/rmaniego/arkivist"
+Repository = "https://github.com/rmaniego/arkivist"
+
+[tool.setuptools]
+packages = ["arkivist"]

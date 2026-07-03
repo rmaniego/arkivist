@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Tooling
+.pytest_cache/
+.tox/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Arkivist runtime artifacts
+.arkivist-*.tmp
+arkivist-auth-*.txt

@@ -10,9 +10,17 @@ Other behaviors are similar to native Python dictionaries, the tutorial below on
 
 `pip install arkivist --upgrade`
 
-Current version is 1.2.\*, but more updates are coming soon. Installing it will also install required packages including *requests*.
+Current version is 1.4.\*, but more updates are coming soon. Installing it will also install required packages including *requests*.
 
 This is compatible with Python 3.9+ and is already used in various personal projects.
+
+## Highlights of 1.4
+
+- **Thread-safe**: a single Arkivist instance can be shared safely across threads.
+- **Atomic saves**: files are written to a temporary file and moved into place, so an interrupted write can no longer corrupt your JSON file.
+- **Consistent autosave**: native dictionary operations (`update`, `pop`, `del`, `clear`, `setdefault`) now autosave just like `set()`.
+- **Safer failures**: failed fetches, invalid `load()` input, and wrong encryption keys raise clear `ArkivistException`s instead of silently wiping data.
+- See [CHANGELOG.md](CHANGELOG.md) for the complete list of fixes and additions.
 
 ## Use-cases
 **1.** Need a lightweight data storage with zero application installations. 
@@ -136,10 +144,12 @@ print("Random item:", names.random())
 **16. Double check if expected key value is correct**
 ```python
 numbers = Arkivist("numbers.json").reset()
-numbers.set("one": 1)
-print("Doublecheck (1):", numbers.doublecheck("one", 1))
-print("Doublecheck (2):", numbers.doublecheck("one", 2))
+numbers.set("one", 1)
+print("Matches (1):", numbers.matches("one", 1))
+print("Matches (2):", numbers.matches("one", 2))
 ```
+
+> `doublecheck()` still works but is deprecated in favor of `matches()`.
 
 **16. Perform shallow queries**
 ```python
@@ -216,6 +226,52 @@ weather.find("weather").set("2022-04-15", "Sunny")
 # to unencrypt, set to false
 weather.encrypt(False)
 ```
+
+**20. Batch operations** 
+Suspend autosave for bulk updates and write to disk only once at the end of the block.
+
+```python
+storage = Arkivist("storage.json")
+with storage.batch():
+    for i in range(10000):
+        storage.set(str(i), i * i)
+```
+
+**21. Use as a context manager** 
+Contents are saved automatically when the block exits, even with autosave disabled.
+
+```python
+with Arkivist("storage.json", autosave=False) as storage:
+    storage.set("status", "done")
+```
+
+**22. Inspect configuration** 
+
+```python
+storage = Arkivist("storage.json")
+print(storage.filepath)   # backing JSON file
+print(storage.encrypted)  # True if saved encrypted
+print(storage.autosave)   # can also be assigned: storage.autosave = False
+```
+
+**23. Fetch with a timeout** 
+`fetch()` accepts `timeout` (seconds, default 10) and optional `headers`; existing data is only replaced after a successful response.
+
+```python
+todos = Arkivist()
+todos.fetch("https://jsonplaceholder.typicode.com/todos/1", timeout=5)
+```
+
+## Thread safety and atomic saves
+
+A single Arkivist instance can be shared across threads; every operation is guarded by a re-entrant lock. Saves are atomic — contents are written to a temporary file and moved into place — so an interrupted write cannot corrupt the JSON file. Note that instances are thread-safe, not multi-process-safe.
+
+## Deprecations
+
+The following still work but emit a `DeprecationWarning`:
+
+- `count()` — use the built-in `len(storage)` instead.
+- `doublecheck(key, value)` — use `matches(key, value)` instead.
 
 ## Futures
 Arkivist is an ongoing project and new features will be added in the future. In the future, it aims to add complex querying and also add a security layer to protect data from unauthorized access.

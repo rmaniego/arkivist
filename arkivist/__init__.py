@@ -1,5 +1,5 @@
 """ arkivist """
-__version__ = "1.3.4"
-from .arkivist import Arkivist
+__version__ = "1.4.0"
+from .arkivist import Arkivist, ArkivistException
 
-__all__ = ["arkivist"]
+__all__ = ["Arkivist", "ArkivistException"]
